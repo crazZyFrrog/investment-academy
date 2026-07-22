@@ -1,0 +1,16 @@
+{
+  "id": "portfolio-basics",
+  "title": "Портфель и дисциплина",
+  "description": "Как собрать простой устойчивый портфель: роли активов, диверсификация, распределение и редкая ребалансировка.",
+  "level": "intermediate",
+  "order": 3,
+  "tags": ["портфель", "диверсификация", "ребалансировка"],
+  "estimatedMinutes": 88,
+  "contentVersion": "3.0.0",
+  "lessonOrder": [
+    "zachem-nuzhen-portfel",
+    "diversifikaciya",
+    "raspredelenie-aktivov",
+    "rebalansirovka"
+  ]
+}

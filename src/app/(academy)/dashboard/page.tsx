@@ -1,43 +1,88 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { getCourses } from "@/data/content/loader";
+import Image from "next/image";
+import { getCourses, getLessonSummaries } from "@/data/content/loader";
+import { ScreenContainer } from "@/components/ui/screen-container";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/motion";
-import { InstallPrompt } from "@/features/pwa/InstallPrompt";
+import { ContinueLearningCard } from "@/features/dashboard/ContinueLearningCard";
+import { DailyInsightCard } from "@/features/dashboard/DailyInsightCard";
+import { ArrowRight } from "@/design-system/icons";
+import { sortByLearningPath } from "@/features/catalog/labels";
+import { DashboardPathProgress } from "@/features/dashboard/DashboardPathProgress";
+import { DashboardCourseList } from "@/features/dashboard/DashboardCourseList";
+import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
 
 export default async function DashboardPage() {
-  const courses = await getCourses();
-  const featured = courses[0];
+  const courses = sortByLearningPath(await getCourses());
+
+  const lessonsEntries = await Promise.all(
+    courses.map(async (course) => {
+      const lessons = await getLessonSummaries(course.slug);
+      return [course.id, lessons] as const;
+    })
+  );
+  const lessonsByCourseId = Object.fromEntries(lessonsEntries);
 
   return (
-    <FadeIn className="space-y-8">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="space-y-2">
-          <h1 className="font-display text-3xl tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Continue where you left off or explore the catalog.
+    <div className="relative min-h-full">
+      <ScreenAtmosphere
+        src="/images/screens/dashboard.jpg"
+        priority
+        intensity="strong"
+      />
+      <ScreenContainer className="relative z-10 space-y-10 pb-8">
+        <FadeIn className="space-y-2 pt-2">
+          <p className="text-label">Investment Academy</p>
+          <h1 className="text-heading-1">Учитесь инвестировать спокойно</h1>
+          <p className="max-w-lg text-body text-text-secondary">
+            Курсы открываются по шагам. Завершите уроки и тесты текущего курса —
+            следующий станет доступен.
           </p>
-        </div>
-        <InstallPrompt />
-      </div>
+        </FadeIn>
 
-      {featured ? (
-        <section className="rounded-xl border border-border/60 bg-card/60 p-6">
-          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">
-            Continue learning
-          </p>
-          <h2 className="mt-2 font-display text-2xl">{featured.title}</h2>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
-            {featured.description}
-          </p>
-          <Button className="mt-4" asChild>
-            <Link href={`/courses/${featured.slug}`}>
-              Open course
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+        <FadeIn delay={0.05}>
+          <ContinueLearningCard
+            courses={courses}
+            lessonsByCourseId={lessonsByCourseId}
+          />
+        </FadeIn>
+
+        <section className="space-y-5">
+          <div className="flex items-end justify-between gap-4">
+            <div className="space-y-1">
+              <h2 className="text-heading-3">Учебный путь</h2>
+              <p className="text-caption">Рекомендуемый порядок прохождения</p>
+            </div>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/courses">
+                Каталог
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
+
+          <FadeIn delay={0.04}>
+            <div className="relative h-36 overflow-hidden rounded-[var(--radius-xl)] sm:h-44">
+              <Image
+                src="/images/dashboard-path.jpg"
+                alt=""
+                fill
+                sizes="(max-width: 768px) 100vw, 720px"
+                className="object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-background/25" aria-hidden />
+            </div>
+          </FadeIn>
+
+          <DashboardPathProgress courses={courses} />
+
+          <DashboardCourseList courses={courses} />
         </section>
-      ) : null}
-    </FadeIn>
+
+        <FadeIn delay={0.08}>
+          <DailyInsightCard />
+        </FadeIn>
+      </ScreenContainer>
+    </div>
   );
 }

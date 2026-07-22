@@ -26,6 +26,7 @@ export {
   Lock,
   Menu,
   Moon,
+  Play,
   PlayCircle,
   Plus,
   RefreshCw,

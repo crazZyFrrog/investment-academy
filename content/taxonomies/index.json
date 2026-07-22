@@ -1,8 +1,30 @@
 {
   "levels": [
-    { "id": "beginner", "label": "Beginner" },
-    { "id": "intermediate", "label": "Intermediate" },
-    { "id": "advanced", "label": "Advanced" }
+    { "id": "beginner", "label": "Начальный" },
+    { "id": "intermediate", "label": "Средний" },
+    { "id": "advanced", "label": "Продвинутый" }
   ],
-  "tags": ["markets", "risk", "portfolio", "macro", "valuation"]
+  "tags": [
+    "основы",
+    "риск",
+    "долгосрок",
+    "инфляция",
+    "акции",
+    "облигации",
+    "фонды",
+    "издержки",
+    "портфель",
+    "диверсификация",
+    "ребалансировка",
+    "практика",
+    "ИИС",
+    "налоги",
+    "ошибки"
+  ],
+  "learningPath": [
+    "investing-fundamentals",
+    "stocks-and-bonds",
+    "portfolio-basics",
+    "russia-practice"
+  ]
 }

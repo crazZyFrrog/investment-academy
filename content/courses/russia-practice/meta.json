@@ -1,0 +1,16 @@
+{
+  "id": "russia-practice",
+  "title": "Практика инвестора в России",
+  "description": "Образовательный обзор: брокерский счёт, идея ИИС, налоги на уровне понятий и типичные ошибки новичков. Не является персональной рекомендацией.",
+  "level": "beginner",
+  "order": 4,
+  "tags": ["практика", "ИИС", "налоги", "ошибки"],
+  "estimatedMinutes": 88,
+  "contentVersion": "3.0.0",
+  "lessonOrder": [
+    "brokerskiy-schet",
+    "iis",
+    "nalogi-obzor",
+    "tipichnye-oshibki"
+  ]
+}

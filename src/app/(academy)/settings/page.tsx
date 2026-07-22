@@ -4,18 +4,21 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ScreenContainer } from "@/components/ui/screen-container";
 import { FadeIn } from "@/components/motion";
 import { InstallPrompt } from "@/features/pwa/InstallPrompt";
+import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
 
 function GuestAccountSection() {
   return (
-    <section className="space-y-3 rounded-xl border border-border/60 p-6">
-      <h2 className="font-medium">Account</h2>
-      <p className="text-sm text-muted-foreground">
-        You are using Guest Mode. Progress is saved locally on this device.
-        Sign-in returns in Version 1.0.
+    <Card padding="lg" className="space-y-3">
+      <h2 className="text-title text-base">Аккаунт</h2>
+      <p className="text-body text-text-secondary">
+        Вы в гостевом режиме. Прогресс сохраняется локально на этом устройстве.
+        Вход в аккаунт появится в версии 1.0.
       </p>
-    </section>
+    </Card>
   );
 }
 
@@ -23,47 +26,65 @@ function AuthenticatedAccountSection() {
   const { data: session } = useSession();
 
   return (
-    <section className="space-y-3 rounded-xl border border-border/60 p-6">
-      <h2 className="font-medium">Account</h2>
+    <Card padding="lg" className="space-y-4">
+      <h2 className="text-title text-base">Аккаунт</h2>
       {session?.user ? (
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            Signed in as {session.user.email ?? session.user.name}
+        <div className="space-y-4">
+          <p className="text-body text-text-secondary">
+            Вы вошли как {session.user.email ?? session.user.name}
           </p>
           <Button variant="outline" onClick={() => signOut()}>
-            Sign out
+            Выйти
           </Button>
         </div>
       ) : (
         <div className="flex flex-wrap gap-3">
           <Button asChild>
-            <Link href="/login">Sign in</Link>
+            <Link href="/login">Войти</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/register">Register</Link>
+            <Link href="/register">Регистрация</Link>
           </Button>
         </div>
       )}
-    </section>
+    </Card>
   );
 }
 
 export default function SettingsPage() {
   return (
-    <FadeIn className="space-y-8">
-      <div className="space-y-2">
-        <h1 className="font-display text-3xl tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">
-          Account preferences and app installation.
-        </p>
-      </div>
+    <div className="relative min-h-full">
+      <ScreenAtmosphere
+        src="/images/screens/settings.jpg"
+        intensity="strong"
+      />
+      <ScreenContainer className="relative z-10 space-y-8 pb-10 pt-2">
+        <FadeIn className="space-y-8">
+          <header className="space-y-3">
+            <h1 className="text-heading-1">Ещё</h1>
+            <p className="max-w-xl text-body text-text-secondary">
+              Настройки аккаунта и установка приложения на устройство.
+            </p>
+          </header>
 
-      {AUTH_ENABLED ? <AuthenticatedAccountSection /> : <GuestAccountSection />}
+          <div className="grid max-w-2xl gap-5">
+            {AUTH_ENABLED ? (
+              <AuthenticatedAccountSection />
+            ) : (
+              <GuestAccountSection />
+            )}
 
-      <section className="space-y-3 rounded-xl border border-border/60 p-6">
-        <h2 className="font-medium">Install app</h2>
-        <InstallPrompt />
-      </section>
-    </FadeIn>
+            <Card padding="lg" className="space-y-4">
+              <h2 className="text-title text-base">Установить приложение</h2>
+              <p className="text-body text-text-secondary">
+                Академию можно добавить на домашний экран как PWA — удобно читать
+                уроки как отдельное приложение.
+              </p>
+              <InstallPrompt />
+            </Card>
+          </div>
+        </FadeIn>
+      </ScreenContainer>
+    </div>
   );
 }

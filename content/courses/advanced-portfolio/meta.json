@@ -1,0 +1,16 @@
+{
+  "id": "advanced-portfolio",
+  "title": "Продвинутый портфель",
+  "description": "Глубже о портфеле: валютный и страновой риск, снятие капитала, стресс-сценарии и цена лишней сложности.",
+  "level": "advanced",
+  "order": 6,
+  "tags": ["портфель", "валюта", "риск", "стресс"],
+  "estimatedMinutes": 88,
+  "contentVersion": "1.0.0",
+  "lessonOrder": [
+    "valyutnyy-i-stranovoy-risk",
+    "snyatie-kapitala",
+    "stress-scenarii",
+    "slozhnost-protiv-prostoty"
+  ]
+}

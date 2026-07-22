@@ -1,11 +1,10 @@
 import { notFound } from "next/navigation";
 import {
   getCourseBySlug,
+  getCourses,
   getLessonSummaries,
 } from "@/data/content/loader";
-import { CourseHeader } from "@/components/course/CourseHeader";
-import { CourseProgressClient } from "@/features/learning/CourseProgressClient";
-import { FadeIn } from "@/components/motion";
+import { CourseDetails } from "@/features/learning/CourseDetails";
 
 export default async function CoursePage({
   params,
@@ -19,17 +18,16 @@ export default async function CoursePage({
     notFound();
   }
 
-  const lessons = await getLessonSummaries(courseSlug);
+  const [lessons, pathCourses] = await Promise.all([
+    getLessonSummaries(courseSlug),
+    getCourses(),
+  ]);
 
   return (
-    <FadeIn className="space-y-8">
-      <CourseHeader course={course} />
-      <CourseProgressClient
-        courseId={course.id}
-        courseSlug={course.slug}
-        totalLessons={course.lessonCount}
-        lessons={lessons}
-      />
-    </FadeIn>
+    <CourseDetails
+      course={course}
+      lessons={lessons}
+      pathCourses={pathCourses}
+    />
   );
 }

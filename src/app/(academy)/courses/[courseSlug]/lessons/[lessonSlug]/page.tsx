@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import {
   getCourseBySlug,
+  getCourses,
   getLesson,
   getLessonSummaries,
 } from "@/data/content/loader";
 import { serializeLessonContent } from "@/data/content/mdx";
-import { LessonPlayer } from "@/components/lesson/LessonPlayer";
+import { LessonReader } from "@/features/learning/LessonReader";
 
 export default async function LessonPage({
   params,
@@ -20,17 +21,25 @@ export default async function LessonPage({
     notFound();
   }
 
-  const lessons = await getLessonSummaries(courseSlug);
-  const mdxSource = await serializeLessonContent(lesson.content);
+  const [lessons, pathCourses, mdxSource] = await Promise.all([
+    getLessonSummaries(courseSlug),
+    getCourses(),
+    serializeLessonContent(lesson.content),
+  ]);
+
+  const hasQuiz = lesson.content.includes("<LessonQuiz");
 
   return (
-    <LessonPlayer
+    <LessonReader
       courseSlug={course.slug}
       courseId={course.id}
+      courseTitle={course.title}
       totalLessons={course.lessonCount}
       lesson={lesson}
       mdxSource={mdxSource}
       lessons={lessons}
+      pathCourses={pathCourses}
+      hasQuiz={hasQuiz}
     />
   );
 }

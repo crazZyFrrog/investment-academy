@@ -2,74 +2,50 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  BookOpen,
-  LayoutDashboard,
-  Settings,
-  TrendingUp,
-} from "lucide-react";
+import { BookOpen, Home, Settings } from "@/design-system/icons";
 import { cn } from "@/lib/utils";
-import { useUiStore } from "@/stores/ui-store";
 
 const items = [
-  { href: "/dashboard", label: "Home", icon: LayoutDashboard },
-  { href: "/courses", label: "Courses", icon: BookOpen },
-  { href: "/progress", label: "Progress", icon: TrendingUp },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/", label: "Главная", icon: Home },
+  { href: "/courses", label: "Курсы", icon: BookOpen },
+  { href: "/settings", label: "Ещё", icon: Settings },
 ];
 
 export function MobileNav() {
   const pathname = usePathname();
-  const sidebarOpen = useUiStore((state) => state.sidebarOpen);
-  const setSidebarOpen = useUiStore((state) => state.setSidebarOpen);
+  const isLesson = pathname.includes("/lessons/");
 
-  if (!sidebarOpen) {
-    return (
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/95 backdrop-blur lg:hidden">
-        <div className="grid grid-cols-4">
-          {items.map(({ href, label, icon: Icon }) => {
-            const active =
-              pathname === href || pathname.startsWith(`${href}/`);
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "flex flex-col items-center gap-1 py-3 text-xs",
-                  active ? "text-primary" : "text-muted-foreground"
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                {label}
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
-    );
+  if (isLesson) {
+    return null;
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-background/80 backdrop-blur lg:hidden"
-      onClick={() => setSidebarOpen(false)}
+    <nav
+      className="fixed inset-x-0 bottom-0 z-[var(--z-sticky)] border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
+      aria-label="Мобильная навигация"
     >
-      <nav
-        className="absolute left-0 top-0 h-full w-64 border-r border-border/60 bg-card p-4"
-        onClick={(event) => event.stopPropagation()}
-      >
-        {items.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            onClick={() => setSidebarOpen(false)}
-            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent"
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </Link>
-        ))}
-      </nav>
-    </div>
+      <div className="mx-auto grid max-w-lg grid-cols-3">
+        {items.map(({ href, label, icon: Icon }) => {
+          const active =
+            href === "/"
+              ? false
+              : pathname === href ||
+                (href === "/courses" && pathname.startsWith("/courses"));
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={cn(
+                "flex flex-col items-center gap-1 py-3 text-[11px] font-medium tracking-wide transition-colors",
+                active ? "text-primary" : "text-text-tertiary"
+              )}
+            >
+              <Icon className="size-[1.15rem]" aria-hidden />
+              {label}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }

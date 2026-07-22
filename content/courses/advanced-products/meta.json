@@ -1,0 +1,16 @@
+{
+  "id": "advanced-products",
+  "title": "Сложные продукты без иллюзий",
+  "description": "Как распознавать сложные финансовые продукты, понимать плечо и структуры на уровне понятий и спокойно говорить «нет».",
+  "level": "advanced",
+  "order": 7,
+  "tags": ["продукты", "риск", "плечо", "дисциплина"],
+  "estimatedMinutes": 88,
+  "contentVersion": "1.0.0",
+  "lessonOrder": [
+    "chto-takoe-slozhnyy-produkt",
+    "rychag-i-proizvodnye",
+    "struktury-i-obeshchaniya",
+    "kogda-govorit-net"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "advanced-behavior",
+  "title": "Поведение и решения инвестора",
+  "description": "Продвинутый уровень: ловушки самоуверенности, дисциплина в просадке, качество решений до сделки и личные правила с журналом.",
+  "level": "advanced",
+  "order": 5,
+  "tags": ["поведение", "дисциплина", "решения", "просадка"],
+  "estimatedMinutes": 88,
+  "contentVersion": "1.0.0",
+  "lessonOrder": [
+    "lovushki-opytnogo",
+    "povedenie-v-prosadke",
+    "kachestvo-resheniy",
+    "pravila-i-zhurnal"
+  ]
+}

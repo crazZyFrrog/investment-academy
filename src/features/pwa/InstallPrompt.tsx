@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download } from "lucide-react";
+import { Download } from "@/design-system/icons";
 import { Button } from "@/components/ui/button";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -28,14 +28,26 @@ export function InstallPrompt() {
     };
   }, []);
 
-  if (installed || !deferredPrompt) {
-    return null;
+  if (installed) {
+    return (
+      <p className="text-sm text-text-secondary">
+        Приложение уже установлено на этом устройстве.
+      </p>
+    );
+  }
+
+  if (!deferredPrompt) {
+    return (
+      <p className="text-sm text-text-secondary">
+        Кнопка установки появится в поддерживаемом браузере. На iPhone: «Поделиться»
+        → «На экран „Домой“».
+      </p>
+    );
   }
 
   return (
     <Button
       variant="outline"
-      size="sm"
       onClick={async () => {
         await deferredPrompt.prompt();
         const choice = await deferredPrompt.userChoice;
@@ -44,8 +56,8 @@ export function InstallPrompt() {
         }
       }}
     >
-      <Download className="h-4 w-4" />
-      Install app
+      <Download className="size-4" />
+      Установить
     </Button>
   );
 }

@@ -1,0 +1,11 @@
+{
+  "id": "stocks-and-bonds",
+  "title": "Акции, облигации и фонды",
+  "description": "Как устроены основные инструменты: акции, облигации, широкие фонды и почему издержки важны не меньше доходности.",
+  "level": "beginner",
+  "order": 2,
+  "tags": ["акции", "облигации", "фонды", "издержки"],
+  "estimatedMinutes": 88,
+  "contentVersion": "3.0.0",
+  "lessonOrder": ["akcii", "obligacii", "fondy", "izderzhki"]
+}

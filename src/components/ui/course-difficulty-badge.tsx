@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
+import { levelLabels } from "@/features/catalog/labels";
 
 export type CourseDifficulty = "beginner" | "intermediate" | "advanced";
 
@@ -8,9 +9,9 @@ const difficultyConfig: Record<
   CourseDifficulty,
   { label: string; variant: NonNullable<BadgeProps["variant"]> }
 > = {
-  beginner: { label: "Beginner", variant: "success" },
-  intermediate: { label: "Intermediate", variant: "warning" },
-  advanced: { label: "Advanced", variant: "accent" },
+  beginner: { label: levelLabels.beginner, variant: "success" },
+  intermediate: { label: levelLabels.intermediate, variant: "warning" },
+  advanced: { label: levelLabels.advanced, variant: "accent" },
 };
 
 export interface CourseDifficultyBadgeProps
@@ -28,11 +29,7 @@ function CourseDifficultyBadge({
   const config = difficultyConfig[difficulty];
 
   return (
-    <Badge
-      variant={config.variant}
-      className={cn("capitalize", className)}
-      {...props}
-    >
+    <Badge variant={config.variant} className={cn(className)} {...props}>
       {label ?? config.label}
     </Badge>
   );
