@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
@@ -13,6 +14,23 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!AUTH_ENABLED) {
+    return (
+      <div className="space-y-6 text-center">
+        <div className="space-y-2">
+          <h1 className="font-display text-2xl">Guest Mode</h1>
+          <p className="text-sm text-muted-foreground">
+            Account creation is temporarily disabled. Continue as a guest —
+            registration returns in Version 1.0.
+          </p>
+        </div>
+        <Button className="w-full" asChild>
+          <Link href="/dashboard">Continue as guest</Link>
+        </Button>
+      </div>
+    );
+  }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();

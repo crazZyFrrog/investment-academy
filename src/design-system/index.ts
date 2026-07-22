@@ -1,9 +1,10 @@
-"use client";
-
 /**
- * Re-export motion helpers for existing `@/components/motion` imports.
- * New code should prefer `@/design-system/motion`.
+ * Investment Academy Design System — public API
  */
+export * from "./tokens";
+export * from "./typography";
+export * from "./theme";
+export * from "./icons";
 export {
   FadeIn,
   SlideUp,
@@ -16,4 +17,4 @@ export {
   pageTransitionVariants,
   cardHoverVariants,
   buttonPressVariants,
-} from "@/design-system/motion";
+} from "./motion";

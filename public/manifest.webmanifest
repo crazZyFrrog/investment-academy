@@ -4,8 +4,8 @@
   "description": "Learn markets, risk, and portfolio thinking.",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#f7f4ef",
-  "theme_color": "#0f5c4c",
+  "background_color": "#f6f6f4",
+  "theme_color": "#3d5c52",
   "icons": [
     {
       "src": "/icons/icon.svg",

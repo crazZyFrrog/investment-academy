@@ -5,6 +5,7 @@ import { useSyncExternalStore } from "react";
 import { useSession } from "next-auth/react";
 import { useUserId } from "@/hooks/use-user-id";
 import { useSyncProgress } from "@/queries/progress";
+import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Badge } from "@/components/ui/badge";
 import { Cloud, CloudOff, RefreshCw } from "lucide-react";
 
@@ -25,7 +26,31 @@ function getServerOnlineSnapshot() {
   return true;
 }
 
-export function SyncStatusBadge() {
+function GuestSyncStatusBadge() {
+  const online = useSyncExternalStore(
+    subscribeOnline,
+    getOnlineSnapshot,
+    getServerOnlineSnapshot
+  );
+
+  if (!online) {
+    return (
+      <Badge variant="outline" className="gap-1">
+        <CloudOff className="h-3 w-3" />
+        Offline
+      </Badge>
+    );
+  }
+
+  return (
+    <Badge variant="outline" className="gap-1">
+      Guest mode
+    </Badge>
+  );
+}
+
+/** Full session-aware badge — mounted only when AUTH_ENABLED is true. */
+function AuthenticatedSyncStatusBadge() {
   const { data: session } = useSession();
   const userId = useUserId();
   const syncProgress = useSyncProgress(userId);
@@ -77,4 +102,12 @@ export function SyncStatusBadge() {
       Guest mode
     </Badge>
   );
+}
+
+export function SyncStatusBadge() {
+  if (!AUTH_ENABLED) {
+    return <GuestSyncStatusBadge />;
+  }
+
+  return <AuthenticatedSyncStatusBadge />;
 }

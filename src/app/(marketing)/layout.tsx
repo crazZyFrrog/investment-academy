@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GraduationCap } from "lucide-react";
+import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
 
 export default function MarketingLayout({
@@ -17,9 +18,11 @@ export default function MarketingLayout({
           </span>
         </Link>
         <div className="flex items-center gap-3">
-          <Button variant="ghost" asChild>
-            <Link href="/login">Sign in</Link>
-          </Button>
+          {AUTH_ENABLED ? (
+            <Button variant="ghost" asChild>
+              <Link href="/login">Sign in</Link>
+            </Button>
+          ) : null}
           <Button asChild>
             <Link href="/dashboard">Enter academy</Link>
           </Button>

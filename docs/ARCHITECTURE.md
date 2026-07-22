@@ -46,7 +46,14 @@ Serwist service worker (`src/app/sw.ts`) with precache + runtime caching. Manife
 
 ## Auth
 
-Auth.js (NextAuth v5) with credentials provider. Guest mode supported via local guest ID. Remote progress sync requires sign-in.
+Auth.js (NextAuth v5) code, routes, and dependencies remain in the repo.
+
+**Current status (pre–Version 1.0):** authentication integration is disabled via `AUTH_ENABLED = false` in `src/data/auth/flags.ts`.
+
+- Guest Mode is the default identity (`useUserId` → local guest id).
+- `SessionProvider` is not mounted, so there is no automatic `/api/auth/session` fetch.
+- Login/register UI is gated; Auth.js handlers under `/api/auth/*` are still present.
+- Set `AUTH_ENABLED` to `true` and switch `src/hooks/use-user-id.ts` to the session export to re-enable for Version 1.0.
 
 ## Database
 

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Source_Sans_3 } from "next/font/google";
 import { AuthProvider } from "./auth-provider";
 import { QueryProvider } from "./providers";
+import { ThemeProvider } from "@/design-system/theme";
 import { OfflineBanner } from "@/features/pwa/OfflineBanner";
 import "@/styles/globals.css";
 
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f5c4c",
+  themeColor: "#3d5c52",
 };
 
 export default function RootLayout({
@@ -42,12 +43,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
       <body className="min-h-full antialiased">
-        <AuthProvider>
-          <QueryProvider>
-            <OfflineBanner />
-            {children}
-          </QueryProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <QueryProvider>
+              <OfflineBanner />
+              {children}
+            </QueryProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
