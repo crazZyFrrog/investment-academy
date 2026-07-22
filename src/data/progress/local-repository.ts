@@ -1,0 +1,211 @@
+import { openDB, type DBSchema, type IDBPDatabase } from "idb";
+import type {
+  CourseProgress,
+  ProgressMutation,
+  ProgressSnapshot,
+  SyncOutboxItem,
+} from "@/domain/progress/types";
+import {
+  completeLesson,
+  recomputeCourseProgress,
+  startLesson,
+} from "@/domain/progress/service";
+
+interface InvestmentAcademyDB extends DBSchema {
+  progress: {
+    key: string;
+    value: ProgressSnapshot;
+  };
+  outbox: {
+    key: string;
+    value: SyncOutboxItem;
+  };
+}
+
+const DB_NAME = "investment-academy";
+const DB_VERSION = 1;
+
+let dbPromise: Promise<IDBPDatabase<InvestmentAcademyDB>> | null = null;
+
+function getDb() {
+  if (typeof window === "undefined") {
+    throw new Error("IndexedDB is only available in the browser");
+  }
+
+  if (!dbPromise) {
+    dbPromise = openDB<InvestmentAcademyDB>(DB_NAME, DB_VERSION, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains("progress")) {
+          db.createObjectStore("progress");
+        }
+        if (!db.objectStoreNames.contains("outbox")) {
+          db.createObjectStore("outbox");
+        }
+      },
+    });
+  }
+
+  return dbPromise;
+}
+
+function emptySnapshot(userId: string): ProgressSnapshot {
+  return {
+    userId,
+    courses: {},
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+export class LocalProgressRepository {
+  constructor(private readonly userId: string) {}
+
+  async getSnapshot(): Promise<ProgressSnapshot> {
+    const db = await getDb();
+    const snapshot = await db.get("progress", this.userId);
+    return snapshot ?? emptySnapshot(this.userId);
+  }
+
+  async saveSnapshot(snapshot: ProgressSnapshot): Promise<void> {
+    const db = await getDb();
+    await db.put("progress", snapshot, this.userId);
+  }
+
+  async getCourseProgress(
+    courseId: string,
+    totalLessons: number
+  ): Promise<CourseProgress> {
+    const snapshot = await this.getSnapshot();
+    const existing = snapshot.courses[courseId];
+
+    if (existing) {
+      return existing;
+    }
+
+    return recomputeCourseProgress(courseId, totalLessons, {});
+  }
+
+  async startLesson(
+    courseId: string,
+    lessonId: string,
+    totalLessons: number
+  ): Promise<CourseProgress> {
+    const snapshot = await this.getSnapshot();
+    const current =
+      snapshot.courses[courseId] ??
+      recomputeCourseProgress(courseId, totalLessons, {});
+
+    const updated = startLesson(current, lessonId);
+    const nextSnapshot: ProgressSnapshot = {
+      ...snapshot,
+      courses: { ...snapshot.courses, [courseId]: updated },
+      updatedAt: new Date().toISOString(),
+    };
+
+    await this.saveSnapshot(nextSnapshot);
+    await this.enqueueMutation({
+      mutationId: crypto.randomUUID(),
+      courseId,
+      lessonId,
+      status: "in_progress",
+      occurredAt: new Date().toISOString(),
+    });
+
+    return updated;
+  }
+
+  async completeLesson(
+    courseId: string,
+    lessonId: string,
+    totalLessons: number,
+    score?: number
+  ): Promise<CourseProgress> {
+    const snapshot = await this.getSnapshot();
+    const current =
+      snapshot.courses[courseId] ??
+      recomputeCourseProgress(courseId, totalLessons, {});
+
+    const updated = completeLesson(current, lessonId, score);
+    const nextSnapshot: ProgressSnapshot = {
+      ...snapshot,
+      courses: { ...snapshot.courses, [courseId]: updated },
+      updatedAt: new Date().toISOString(),
+    };
+
+    await this.saveSnapshot(nextSnapshot);
+    await this.enqueueMutation({
+      mutationId: crypto.randomUUID(),
+      courseId,
+      lessonId,
+      status: "completed",
+      score,
+      occurredAt: new Date().toISOString(),
+    });
+
+    return updated;
+  }
+
+  async enqueueMutation(mutation: ProgressMutation): Promise<void> {
+    const db = await getDb();
+    await db.put(
+      "outbox",
+      { ...mutation, retries: 0 },
+      mutation.mutationId
+    );
+  }
+
+  async getOutbox(): Promise<SyncOutboxItem[]> {
+    const db = await getDb();
+    return db.getAll("outbox");
+  }
+
+  async removeFromOutbox(mutationId: string): Promise<void> {
+    const db = await getDb();
+    await db.delete("outbox", mutationId);
+  }
+
+  async mergeSnapshot(remote: ProgressSnapshot): Promise<ProgressSnapshot> {
+    const local = await this.getSnapshot();
+    const mergedCourses: Record<string, CourseProgress> = {
+      ...local.courses,
+    };
+
+    for (const [courseId, remoteCourse] of Object.entries(remote.courses)) {
+      const localCourse = mergedCourses[courseId];
+      if (!localCourse) {
+        mergedCourses[courseId] = remoteCourse;
+        continue;
+      }
+
+      const lessons = { ...localCourse.lessons };
+      for (const [lessonId, remoteLesson] of Object.entries(
+        remoteCourse.lessons
+      )) {
+        const localLesson = lessons[lessonId];
+        if (!localLesson) {
+          lessons[lessonId] = remoteLesson;
+          continue;
+        }
+
+        const { mergeLessonProgress } = await import(
+          "@/domain/progress/service"
+        );
+        lessons[lessonId] = mergeLessonProgress(localLesson, remoteLesson);
+      }
+
+      mergedCourses[courseId] = recomputeCourseProgress(
+        courseId,
+        remoteCourse.totalLessons || localCourse.totalLessons,
+        lessons
+      );
+    }
+
+    const merged: ProgressSnapshot = {
+      userId: this.userId,
+      courses: mergedCourses,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await this.saveSnapshot(merged);
+    return merged;
+  }
+}

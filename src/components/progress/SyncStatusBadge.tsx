@@ -1,0 +1,80 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { useSyncExternalStore } from "react";
+import { useSession } from "next-auth/react";
+import { useUserId } from "@/hooks/use-user-id";
+import { useSyncProgress } from "@/queries/progress";
+import { Badge } from "@/components/ui/badge";
+import { Cloud, CloudOff, RefreshCw } from "lucide-react";
+
+function subscribeOnline(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getOnlineSnapshot() {
+  return navigator.onLine;
+}
+
+function getServerOnlineSnapshot() {
+  return true;
+}
+
+export function SyncStatusBadge() {
+  const { data: session } = useSession();
+  const userId = useUserId();
+  const syncProgress = useSyncProgress(userId);
+  const hasSyncedRef = useRef(false);
+  const online = useSyncExternalStore(
+    subscribeOnline,
+    getOnlineSnapshot,
+    getServerOnlineSnapshot
+  );
+
+  useEffect(() => {
+    if (!session?.user?.id || !online || hasSyncedRef.current) {
+      return;
+    }
+
+    hasSyncedRef.current = true;
+    syncProgress.mutate();
+  }, [session?.user?.id, online, syncProgress]);
+
+  if (!online) {
+    return (
+      <Badge variant="outline" className="gap-1">
+        <CloudOff className="h-3 w-3" />
+        Offline
+      </Badge>
+    );
+  }
+
+  if (syncProgress.isPending) {
+    return (
+      <Badge variant="outline" className="gap-1">
+        <RefreshCw className="h-3 w-3 animate-spin" />
+        Syncing
+      </Badge>
+    );
+  }
+
+  if (session?.user?.id) {
+    return (
+      <Badge variant="secondary" className="gap-1">
+        <Cloud className="h-3 w-3" />
+        Synced
+      </Badge>
+    );
+  }
+
+  return (
+    <Badge variant="outline" className="gap-1">
+      Guest mode
+    </Badge>
+  );
+}

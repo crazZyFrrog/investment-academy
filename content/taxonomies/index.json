@@ -1,0 +1,8 @@
+{
+  "levels": [
+    { "id": "beginner", "label": "Beginner" },
+    { "id": "intermediate", "label": "Intermediate" },
+    { "id": "advanced", "label": "Advanced" }
+  ],
+  "tags": ["markets", "risk", "portfolio", "macro", "valuation"]
+}

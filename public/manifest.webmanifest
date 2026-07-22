@@ -1,0 +1,17 @@
+{
+  "name": "Investment Academy",
+  "short_name": "Academy",
+  "description": "Learn markets, risk, and portfolio thinking.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f7f4ef",
+  "theme_color": "#0f5c4c",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

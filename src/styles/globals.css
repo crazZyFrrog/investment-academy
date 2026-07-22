@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f4ef;
+  --foreground: #142019;
+  --card: #fffdf9;
+  --card-foreground: #142019;
+  --primary: #0f5c4c;
+  --primary-foreground: #f4fbf8;
+  --secondary: #e8ece8;
+  --secondary-foreground: #1c2a22;
+  --muted: #ece7df;
+  --muted-foreground: #5f6b63;
+  --accent: #dceee8;
+  --accent-foreground: #0f5c4c;
+  --destructive: #b42318;
+  --destructive-foreground: #fff;
+  --border: #d8d2c8;
+  --input: #d8d2c8;
+  --ring: #0f5c4c;
+  --hero-gradient: radial-gradient(
+      circle at 20% 20%,
+      rgba(15, 92, 76, 0.18),
+      transparent 45%
+    ),
+    radial-gradient(circle at 80% 0%, rgba(20, 32, 25, 0.08), transparent 40%),
+    linear-gradient(180deg, #f7f4ef 0%, #eef3ef 100%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1210;
+    --foreground: #edf3ef;
+    --card: #111916;
+    --card-foreground: #edf3ef;
+    --primary: #49a48d;
+    --primary-foreground: #07110e;
+    --secondary: #18221d;
+    --secondary-foreground: #edf3ef;
+    --muted: #18221d;
+    --muted-foreground: #9aa8a0;
+    --accent: #16342c;
+    --accent-foreground: #b7e6d8;
+    --border: #24312a;
+    --input: #24312a;
+    --ring: #49a48d;
+    --hero-gradient: radial-gradient(
+        circle at 20% 20%,
+        rgba(73, 164, 141, 0.16),
+        transparent 45%
+      ),
+      radial-gradient(circle at 80% 0%, rgba(237, 243, 239, 0.05), transparent 40%),
+      linear-gradient(180deg, #0b1210 0%, #101815 100%);
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), serif;
+}
+
+.hero-surface {
+  background: var(--hero-gradient);
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  font-family: var(--font-display), serif;
+}

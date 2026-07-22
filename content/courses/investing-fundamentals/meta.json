@@ -1,0 +1,11 @@
+{
+  "id": "investing-fundamentals",
+  "title": "Investing Fundamentals",
+  "description": "Build a durable foundation in markets, risk, and long-term portfolio thinking.",
+  "level": "beginner",
+  "order": 1,
+  "tags": ["markets", "risk", "portfolio"],
+  "estimatedMinutes": 45,
+  "contentVersion": "1.0.0",
+  "lessonOrder": ["what-is-investing", "risk-and-return"]
+}
