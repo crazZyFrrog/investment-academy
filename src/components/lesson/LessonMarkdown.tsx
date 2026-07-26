@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useState, type ReactNode } from "react";
 import { MDXRemote } from "next-mdx-remote";
 import type { MDXRemoteSerializeResult } from "next-mdx-remote";
-import type { ReactNode } from "react";
 import { LessonQuiz } from "@/components/lesson/LessonQuiz";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +16,7 @@ function Callout({
   return (
     <aside
       className={cn(
-        "my-8 rounded-[var(--radius-xl)] border px-5 py-4 text-[0.95rem] leading-relaxed",
+        "my-8 rounded-[var(--radius-xl)] border px-5 py-4 text-[1.05rem] leading-relaxed",
         type === "warning" &&
           "border-warning/25 bg-warning/[0.07] text-text-primary",
         type === "insight" &&
@@ -95,6 +95,9 @@ const baseComponents = {
   ),
 };
 
+/** Survives React Strict Mode remount so MDX does not flash unmount in tests/dev. */
+let mdxClientReady = false;
+
 export function LessonMarkdown({
   source,
   onQuizPassed,
@@ -102,6 +105,14 @@ export function LessonMarkdown({
   source: MDXRemoteSerializeResult;
   onQuizPassed?: (score: number) => void;
 }) {
+  // MDXRemote calls useState during SSR; under Next 16 / React 19 that throws
+  // (dispatcher null) and can blank the lesson page. Mount content only on client.
+  const [mounted, setMounted] = useState(mdxClientReady);
+  useEffect(() => {
+    mdxClientReady = true;
+    setMounted(true);
+  }, []);
+
   const components = {
     ...baseComponents,
     LessonQuiz: (props: {
@@ -110,6 +121,16 @@ export function LessonMarkdown({
       data: string;
     }) => <LessonQuiz {...props} onPassed={onQuizPassed} />,
   };
+
+  if (!mounted) {
+    return (
+      <article className="max-w-none" aria-busy>
+        <p className="text-caption text-text-secondary" aria-live="polite">
+          Загружаем текст урока…
+        </p>
+      </article>
+    );
+  }
 
   return (
     <article className="max-w-none">

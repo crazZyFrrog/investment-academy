@@ -4,13 +4,12 @@ import { useMemo, useState } from "react";
 import { Check, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  parseLessonQuizData,
+  type LessonQuizItem,
+} from "@/domain/lesson/quiz";
 
-export type LessonQuizItem = {
-  question: string;
-  options: string[];
-  correctIndex: number;
-  explanation: string;
-};
+export type { LessonQuizItem };
 
 type LessonQuizProps = {
   id: string;
@@ -21,30 +20,13 @@ type LessonQuizProps = {
   onPassed?: (score: number) => void;
 };
 
-function parseItems(data: string): LessonQuizItem[] {
-  try {
-    const parsed = JSON.parse(data) as LessonQuizItem[];
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (item) =>
-        item &&
-        typeof item.question === "string" &&
-        Array.isArray(item.options) &&
-        typeof item.correctIndex === "number" &&
-        typeof item.explanation === "string"
-    );
-  } catch {
-    return [];
-  }
-}
-
 export function LessonQuiz({
   id,
   title = "Проверьте себя",
   data,
   onPassed,
 }: LessonQuizProps) {
-  const items = useMemo(() => parseItems(data), [data]);
+  const items = useMemo(() => parseLessonQuizData(data), [data]);
   const [selected, setSelected] = useState<Record<number, number | null>>({});
   const [checked, setChecked] = useState(false);
 
@@ -197,7 +179,7 @@ export function LessonQuiz({
             Проверить ответы
           </Button>
         ) : (
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
             <p className="text-[1.05rem] text-text-primary">
               Результат:{" "}
               <span className="font-semibold">
@@ -224,6 +206,33 @@ export function LessonQuiz({
           </p>
         ) : null}
       </div>
+
+      {checked && !passed ? (
+        <aside className="mt-6 rounded-[var(--radius-xl)] border border-warning/30 bg-warning/[0.07] px-5 py-4 text-[0.95rem] leading-relaxed text-text-primary">
+          <p className="font-medium">Подсказка</p>
+          <p className="mt-1.5 text-text-secondary">
+            Прочитайте пояснения под вопросами — там коротко разобрана логика
+            верного ответа. Затем нажмите «Пройти ещё раз» и отметьте все пункты
+            верно, чтобы открыть завершение урока.
+          </p>
+        </aside>
+      ) : null}
+
+      {checked && passed ? (
+        <aside className="mt-6 rounded-[var(--radius-xl)] border border-success/30 bg-success/[0.07] px-5 py-4 text-[0.95rem] leading-relaxed text-text-primary">
+          <p className="font-medium">Отлично</p>
+          <p className="mt-1.5 text-text-secondary">
+            Тест пройден. Прокрутите ниже и нажмите «Отметить как прочитанный»,
+            чтобы открыть следующий урок.
+          </p>
+          <a
+            href="#lesson-complete"
+            className="mt-3 inline-flex text-sm font-medium text-primary underline-offset-2 hover:underline"
+          >
+            Перейти к завершению урока
+          </a>
+        </aside>
+      ) : null}
     </section>
   );
 }

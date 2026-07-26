@@ -12,6 +12,7 @@ export interface LessonRowProps {
   index: number;
   /** When true, titles stay visible but the lesson cannot be opened */
   locked?: boolean;
+  lockHint?: string;
 }
 
 export function LessonRow({
@@ -20,6 +21,7 @@ export function LessonRow({
   status = "not_started",
   index,
   locked = false,
+  lockHint = "Содержание откроется после предыдущего шага",
 }: LessonRowProps) {
   const Icon = locked
     ? Lock
@@ -57,9 +59,7 @@ export function LessonRow({
           {lesson.title}
         </p>
         {locked ? (
-          <p className="text-caption text-text-tertiary">
-            Содержание откроется после предыдущего курса
-          </p>
+          <p className="text-caption text-text-tertiary">{lockHint}</p>
         ) : null}
       </div>
       <span className="shrink-0 text-caption tabular-nums">

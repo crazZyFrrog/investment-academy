@@ -9,6 +9,7 @@ import { ScreenContainer } from "@/components/ui/screen-container";
 import { FadeIn } from "@/components/motion";
 import { InstallPrompt } from "@/features/pwa/InstallPrompt";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
+import { ReadablePanel } from "@/components/layout/ReadablePanel";
 
 function GuestAccountSection() {
   return (
@@ -56,16 +57,16 @@ export default function SettingsPage() {
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/settings.jpg"
-        intensity="strong"
+        intensity="reading"
       />
       <ScreenContainer className="relative z-10 space-y-8 pb-10 pt-2">
         <FadeIn className="space-y-8">
-          <header className="space-y-3">
+          <ReadablePanel className="space-y-3">
             <h1 className="text-heading-1">Ещё</h1>
             <p className="max-w-xl text-body text-text-secondary">
               Настройки аккаунта и установка приложения на устройство.
             </p>
-          </header>
+          </ReadablePanel>
 
           <div className="grid max-w-2xl gap-5">
             {AUTH_ENABLED ? (

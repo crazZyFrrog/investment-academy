@@ -11,6 +11,7 @@ import { ScreenContainer } from "@/components/ui/screen-container";
 import { levelLabels, type CourseLevelKey } from "@/features/catalog/labels";
 import { useCourseUnlock } from "@/features/learning/use-course-unlock";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
+import { ReadablePanel } from "@/components/layout/ReadablePanel";
 
 type Filter = "all" | CourseLevelKey;
 
@@ -34,21 +35,21 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/courses.jpg"
-        intensity="strong"
+        intensity="reading"
       />
       <ScreenContainer className="relative z-10 space-y-8">
         <FadeIn className="space-y-4">
           <Button variant="ghost" size="sm" className="-ml-2 w-fit px-2" asChild>
             <Link href="/">← На главную</Link>
           </Button>
-          <div className="space-y-3">
+          <ReadablePanel className="space-y-3">
             <h1 className="text-heading-1">Курсы</h1>
             <p className="max-w-xl text-body text-text-secondary">
               Курсы открываются по порядку: завершите уроки и тесты текущего
               шага, чтобы перейти к следующему. Программу закрытых курсов можно
               просматривать заранее.
             </p>
-          </div>
+          </ReadablePanel>
         </FadeIn>
 
         <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

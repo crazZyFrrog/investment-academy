@@ -15,21 +15,25 @@ export function ScreenAtmosphere({
   priority?: boolean;
   className?: string;
   /** How strong the readable wash is */
-  intensity?: "soft" | "default" | "strong";
+  intensity?: "soft" | "default" | "strong" | "reading";
 }) {
   const wash =
     intensity === "soft"
       ? "bg-background/45 sm:bg-background/35"
-      : intensity === "strong"
-        ? "bg-background/75 sm:bg-background/65"
-        : "bg-background/60 sm:bg-background/50";
+      : intensity === "reading"
+        ? "bg-background/82 sm:bg-background/78"
+        : intensity === "strong"
+          ? "bg-background/75 sm:bg-background/68"
+          : "bg-background/60 sm:bg-background/50";
 
   const sideWash =
     intensity === "soft"
       ? "bg-background/55 sm:bg-background/40"
-      : intensity === "strong"
-        ? "bg-background/80 sm:bg-background/70"
-        : "bg-background/70 sm:bg-background/55";
+      : intensity === "reading"
+        ? "bg-background/90 sm:bg-background/85"
+        : intensity === "strong"
+          ? "bg-background/82 sm:bg-background/75"
+          : "bg-background/70 sm:bg-background/55";
 
   return (
     <div

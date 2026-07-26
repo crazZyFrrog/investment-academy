@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { TopBar } from "./TopBar";
 import { SideNav } from "./SideNav";
 import { MobileNav } from "./MobileNav";
+import { EducationalDisclaimer } from "./EducationalDisclaimer";
 import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         <TopBar />
         <main className="relative flex-1">{children}</main>
+        {!isLesson ? (
+          <footer className="relative z-10 border-t border-border/70 bg-background/80 px-5 py-4 sm:px-8">
+            <EducationalDisclaimer className="mx-auto max-w-5xl" />
+          </footer>
+        ) : null}
       </div>
       <MobileNav />
     </div>

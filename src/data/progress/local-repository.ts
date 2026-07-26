@@ -5,11 +5,18 @@ import type {
   ProgressSnapshot,
   SyncOutboxItem,
 } from "@/domain/progress/types";
+import { AUTH_ENABLED } from "@/data/auth/flags";
 import {
   completeLesson,
   recomputeCourseProgress,
   startLesson,
 } from "@/domain/progress/service";
+
+function shouldEnqueueOutbox(userId: string): boolean {
+  if (!AUTH_ENABLED) return false;
+  if (!userId || userId.startsWith("guest-")) return false;
+  return true;
+}
 
 interface InvestmentAcademyDB extends DBSchema {
   progress: {
@@ -77,11 +84,13 @@ export class LocalProgressRepository {
     const snapshot = await this.getSnapshot();
     const existing = snapshot.courses[courseId];
 
-    if (existing) {
-      return existing;
-    }
-
-    return recomputeCourseProgress(courseId, totalLessons, {});
+    // Always recompute against catalog lessonCount so unlock stays correct
+    // after content version bumps.
+    return recomputeCourseProgress(
+      courseId,
+      totalLessons,
+      existing?.lessons ?? {}
+    );
   }
 
   async startLesson(
@@ -94,7 +103,14 @@ export class LocalProgressRepository {
       snapshot.courses[courseId] ??
       recomputeCourseProgress(courseId, totalLessons, {});
 
-    const updated = startLesson(current, lessonId);
+    const updated = recomputeCourseProgress(
+      courseId,
+      totalLessons,
+      startLesson(
+        { ...current, totalLessons },
+        lessonId
+      ).lessons
+    );
     const nextSnapshot: ProgressSnapshot = {
       ...snapshot,
       courses: { ...snapshot.courses, [courseId]: updated },
@@ -102,13 +118,15 @@ export class LocalProgressRepository {
     };
 
     await this.saveSnapshot(nextSnapshot);
-    await this.enqueueMutation({
-      mutationId: crypto.randomUUID(),
-      courseId,
-      lessonId,
-      status: "in_progress",
-      occurredAt: new Date().toISOString(),
-    });
+    if (shouldEnqueueOutbox(this.userId)) {
+      await this.enqueueMutation({
+        mutationId: crypto.randomUUID(),
+        courseId,
+        lessonId,
+        status: "in_progress",
+        occurredAt: new Date().toISOString(),
+      });
+    }
 
     return updated;
   }
@@ -124,7 +142,15 @@ export class LocalProgressRepository {
       snapshot.courses[courseId] ??
       recomputeCourseProgress(courseId, totalLessons, {});
 
-    const updated = completeLesson(current, lessonId, score);
+    const updated = recomputeCourseProgress(
+      courseId,
+      totalLessons,
+      completeLesson(
+        { ...current, totalLessons },
+        lessonId,
+        score
+      ).lessons
+    );
     const nextSnapshot: ProgressSnapshot = {
       ...snapshot,
       courses: { ...snapshot.courses, [courseId]: updated },
@@ -132,14 +158,16 @@ export class LocalProgressRepository {
     };
 
     await this.saveSnapshot(nextSnapshot);
-    await this.enqueueMutation({
-      mutationId: crypto.randomUUID(),
-      courseId,
-      lessonId,
-      status: "completed",
-      score,
-      occurredAt: new Date().toISOString(),
-    });
+    if (shouldEnqueueOutbox(this.userId)) {
+      await this.enqueueMutation({
+        mutationId: crypto.randomUUID(),
+        courseId,
+        lessonId,
+        status: "completed",
+        score,
+        occurredAt: new Date().toISOString(),
+      });
+    }
 
     return updated;
   }

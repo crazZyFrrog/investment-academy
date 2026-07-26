@@ -20,7 +20,13 @@ import {
 } from "@/features/catalog/labels";
 import { useCourseUnlock } from "@/features/learning/use-course-unlock";
 import { getLearningPathIndex } from "@/features/learning/unlock";
+import {
+  getLessonLockReason,
+  getNextPlayableLesson,
+  isLessonContentUnlocked,
+} from "@/features/learning/lesson-unlock";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
+import { ReadablePanel } from "@/components/layout/ReadablePanel";
 import { cn } from "@/lib/utils";
 
 export function CourseDetails({
@@ -46,10 +52,7 @@ export function CourseDetails({
     : !isUnlocked(course.slug);
   const lockReason = getLockReason(course.slug);
 
-  const nextLesson =
-    lessons.find(
-      (lesson) => progress?.lessons[lesson.id]?.status !== "completed"
-    ) ?? lessons[0];
+  const nextLesson = getNextPlayableLesson(lessons, progress) ?? lessons[0];
 
   const ctaHref = nextLesson
     ? `/courses/${course.slug}/lessons/${nextLesson.slug}`
@@ -59,13 +62,13 @@ export function CourseDetails({
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/course.jpg"
-        intensity="strong"
+        intensity="reading"
       />
       <ScreenContainer className="relative z-10 space-y-8 pb-10">
         <FadeIn>
           <Link
             href="/courses"
-            className="text-caption text-text-secondary transition-colors hover:text-text-primary"
+            className="inline-flex rounded-md bg-surface/80 px-2 py-1 text-caption text-text-secondary transition-colors hover:text-text-primary"
           >
             ← Все курсы
           </Link>
@@ -132,38 +135,43 @@ export function CourseDetails({
         </FadeIn>
 
         <section className="space-y-4">
-          <div className="space-y-1">
+          <ReadablePanel className="space-y-1 py-4">
             <h2 className="text-heading-3">Программа</h2>
-            {locked ? (
-              <p className="text-caption">
-                Названия уроков доступны заранее. Содержание — после открытия
-                курса.
-              </p>
-            ) : null}
-          </div>
+            <p className="text-caption">
+              {locked
+                ? "Названия уроков доступны заранее. Содержание — после открытия курса."
+                : "Уроки открываются по порядку: следующий — после материала и теста предыдущего."}
+            </p>
+          </ReadablePanel>
           <ol className="space-y-3">
-            {lessons.map((lesson, index) => (
-              <SlideUp key={lesson.id} delay={0.03 * index}>
-                <li>
-                  <LessonRow
-                    courseSlug={course.slug}
-                    lesson={lesson}
-                    index={index + 1}
-                    status={progress?.lessons[lesson.id]?.status}
-                    locked={locked}
-                  />
-                </li>
-              </SlideUp>
-            ))}
+            {lessons.map((lesson, index) => {
+              const lessonLockedBySequence =
+                !locked &&
+                !isLessonContentUnlocked(lessons, index, progress);
+              const rowLocked = locked || lessonLockedBySequence;
+              const lockHint = locked
+                ? "Содержание откроется после предыдущего курса"
+                : (getLessonLockReason(lessons, index) ??
+                  "Сначала завершите предыдущий урок");
+
+              return (
+                <SlideUp key={lesson.id} delay={0.03 * index}>
+                  <li>
+                    <LessonRow
+                      courseSlug={course.slug}
+                      lesson={lesson}
+                      index={index + 1}
+                      status={progress?.lessons[lesson.id]?.status}
+                      locked={rowLocked}
+                      lockHint={lockHint}
+                    />
+                  </li>
+                </SlideUp>
+              );
+            })}
           </ol>
         </section>
 
-        <p className="text-caption leading-relaxed text-text-tertiary">
-          Материалы носят образовательный характер и не являются индивидуальной
-          инвестиционной или налоговой рекомендацией. Условия продуктов и нормы
-          права могут меняться — сверяйте актуальные правила в официальных
-          источниках.
-        </p>
       </ScreenContainer>
     </div>
   );

@@ -2,14 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Home, Settings } from "@/design-system/icons";
+import {
+  BookOpen,
+  LayoutDashboard,
+  Settings,
+  TrendingUp,
+} from "@/design-system/icons";
 import { cn } from "@/lib/utils";
 
 const items = [
-  { href: "/", label: "Главная", icon: Home },
+  { href: "/dashboard", label: "Главная", icon: LayoutDashboard },
   { href: "/courses", label: "Курсы", icon: BookOpen },
+  { href: "/progress", label: "Прогресс", icon: TrendingUp },
   { href: "/settings", label: "Ещё", icon: Settings },
 ];
+
+function isActive(pathname: string, href: string) {
+  if (href === "/dashboard") {
+    return pathname === "/dashboard";
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -21,26 +34,30 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-[var(--z-sticky)] border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-[var(--z-sticky)] border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
       aria-label="Мобильная навигация"
     >
-      <div className="mx-auto grid max-w-lg grid-cols-3">
+      <div className="mx-auto grid max-w-lg grid-cols-4 px-1">
         {items.map(({ href, label, icon: Icon }) => {
-          const active =
-            href === "/"
-              ? false
-              : pathname === href ||
-                (href === "/courses" && pathname.startsWith("/courses"));
+          const active = isActive(pathname, href);
           return (
             <Link
               key={href}
               href={href}
+              aria-current={active ? "page" : undefined}
               className={cn(
-                "flex flex-col items-center gap-1 py-3 text-[11px] font-medium tracking-wide transition-colors",
+                "flex min-h-[3.25rem] flex-col items-center justify-center gap-1 rounded-[var(--radius-lg)] px-1 py-2 text-[11px] font-medium tracking-wide transition-colors",
+                "active:bg-muted/80",
                 active ? "text-primary" : "text-text-tertiary"
               )}
             >
-              <Icon className="size-[1.15rem]" aria-hidden />
+              <Icon
+                className={cn(
+                  "size-5",
+                  active && "stroke-[2.25px]"
+                )}
+                aria-hidden
+              />
               {label}
             </Link>
           );

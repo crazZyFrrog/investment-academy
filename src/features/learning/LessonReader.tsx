@@ -24,6 +24,10 @@ import { Progress } from "@/components/ui/progress";
 import { formatMinutes } from "@/features/catalog/labels";
 import { useCourseUnlock } from "@/features/learning/use-course-unlock";
 import { getLearningPathIndex } from "@/features/learning/unlock";
+import {
+  getLessonLockReason,
+  isLessonContentUnlocked,
+} from "@/features/learning/lesson-unlock";
 
 export function LessonReader({
   courseSlug,
@@ -55,11 +59,11 @@ export function LessonReader({
 
   const { isUnlocked, getLockReason, isLoading: unlockLoading } =
     useCourseUnlock(pathCourses);
-  // While progress loads, keep non-first path courses locked to avoid a content flash
-  const contentLocked = unlockLoading
+
+  const courseLocked = unlockLoading
     ? getLearningPathIndex(courseSlug) > 0
     : !isUnlocked(courseSlug);
-  const lockReason = getLockReason(courseSlug);
+  const courseLockReason = getLockReason(courseSlug);
 
   const lessonProgress = progress?.lessons[lesson.id];
   const isCompleted = lessonProgress?.status === "completed";
@@ -70,8 +74,19 @@ export function LessonReader({
   const readingProgress =
     lessons.length === 0 ? 0 : Math.round(((index + 1) / lessons.length) * 100);
 
+  const lessonLocked =
+    !courseLocked &&
+    index >= 0 &&
+    !isLessonContentUnlocked(lessons, index, progress);
+  const lessonLockReason =
+    index >= 0 ? getLessonLockReason(lessons, index) : null;
+
+  const contentLocked = courseLocked || lessonLocked;
+  const lockReason = courseLocked ? courseLockReason : lessonLockReason;
+
   const canComplete =
     isCompleted || !hasQuiz || quizPassed || (lessonProgress?.score ?? 0) >= 100;
+  const nextLocked = Boolean(next) && !isCompleted;
 
   useEffect(() => {
     if (contentLocked) return;
@@ -111,14 +126,20 @@ export function LessonReader({
             </h1>
             <p className="mt-3 max-w-sm text-body text-text-secondary">
               {lockReason ??
-                "Сначала завершите предыдущий курс: все уроки и тесты."}
+                "Сначала завершите предыдущий шаг обучения."}
             </p>
-            <p className="mt-2 text-caption text-text-tertiary">
-              Название урока уже видно в программе курса.
-            </p>
-            <Button asChild className="mt-8">
-              <Link href={`/courses/${courseSlug}`}>К программе курса</Link>
-            </Button>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {prev && lessonLocked ? (
+                <Button asChild>
+                  <Link href={`/courses/${courseSlug}/lessons/${prev.slug}`}>
+                    К предыдущему уроку
+                  </Link>
+                </Button>
+              ) : null}
+              <Button variant={prev && lessonLocked ? "outline" : "default"} asChild>
+                <Link href={`/courses/${courseSlug}`}>К программе курса</Link>
+              </Button>
+            </div>
           </div>
         </FadeIn>
       </div>
@@ -127,7 +148,7 @@ export function LessonReader({
 
   return (
     <div className="min-h-dvh bg-background">
-      <header className="sticky top-0 z-[var(--z-sticky)] border-b border-border bg-background">
+      <header className="sticky top-0 z-[var(--z-sticky)] border-b border-border bg-background/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-5 py-3">
           <Button variant="ghost" size="icon" asChild aria-label="К курсу">
             <Link href={`/courses/${courseSlug}`}>
@@ -174,7 +195,10 @@ export function LessonReader({
           onQuizPassed={() => setQuizPassed(true)}
         />
 
-        <div className="mt-12 space-y-4 border-t border-border pt-8">
+        <div
+          id="lesson-complete"
+          className="mt-12 scroll-mt-28 space-y-4 border-t border-border pt-8"
+        >
           {isCompleted ? (
             <CelebrateComplete>
               <div className="flex items-start gap-3 rounded-[var(--radius-xl)] border border-primary/20 bg-primary/[0.05] px-4 py-4">
@@ -185,6 +209,9 @@ export function LessonReader({
                   </p>
                   <p className="text-caption">
                     Прогресс сохранён на этом устройстве.
+                    {next
+                      ? " Можно переходить к следующему уроку."
+                      : " Курс почти готов — вернитесь к программе."}
                   </p>
                 </div>
               </div>
@@ -194,6 +221,11 @@ export function LessonReader({
               {hasQuiz && !canComplete ? (
                 <p className="text-caption text-text-secondary">
                   Сначала пройдите тест в конце урока — нужны все верные ответы.
+                </p>
+              ) : null}
+              {hasQuiz && canComplete && !isCompleted ? (
+                <p className="rounded-[var(--radius-lg)] border border-success/25 bg-success/[0.06] px-4 py-3 text-caption text-text-primary">
+                  Тест сдан. Отметьте урок пройденным, чтобы открыть следующий.
                 </p>
               ) : null}
               <Button
@@ -235,19 +267,37 @@ export function LessonReader({
             <div className="flex-1" />
           )}
           {next ? (
-            <Button className="h-auto min-w-0 flex-1 justify-end py-3" asChild>
-              <Link href={`/courses/${courseSlug}/lessons/${next.slug}`}>
-                <span className="truncate text-right text-primary-foreground">
+            nextLocked ? (
+              <Button
+                className="h-auto min-w-0 flex-1 justify-end py-3"
+                disabled
+                title="Сначала завершите текущий урок"
+              >
+                <span className="truncate text-right">
                   <span className="block text-xs font-medium opacity-90">
-                    Далее
+                    Далее · закрыт
                   </span>
                   <span className="block truncate text-sm font-medium">
                     {next.title}
                   </span>
                 </span>
-                <ChevronRight className="size-4 shrink-0 text-primary-foreground" />
-              </Link>
-            </Button>
+                <Lock className="size-4 shrink-0 opacity-80" />
+              </Button>
+            ) : (
+              <Button className="h-auto min-w-0 flex-1 justify-end py-3" asChild>
+                <Link href={`/courses/${courseSlug}/lessons/${next.slug}`}>
+                  <span className="truncate text-right text-primary-foreground">
+                    <span className="block text-xs font-medium opacity-90">
+                      Далее
+                    </span>
+                    <span className="block truncate text-sm font-medium">
+                      {next.title}
+                    </span>
+                  </span>
+                  <ChevronRight className="size-4 shrink-0 text-primary-foreground" />
+                </Link>
+              </Button>
+            )
           ) : (
             <Button variant="secondary" className="flex-1" asChild>
               <Link href={`/courses/${courseSlug}`}>К программе курса</Link>

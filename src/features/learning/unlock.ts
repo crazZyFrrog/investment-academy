@@ -20,9 +20,14 @@ export function isCourseFullyComplete(
   if (lessonCount <= 0) return true;
   const progress = snapshot?.courses[courseId];
   if (!progress) return false;
-  return (
-    progress.completedLessons >= lessonCount || progress.percentComplete >= 100
-  );
+
+  // Count completed lessons against catalog lessonCount — never trust a stale
+  // percentComplete alone (content version bumps can leave 100% with fewer rows).
+  const completedFromLessons = Object.values(progress.lessons).filter(
+    (lesson) => lesson.status === "completed"
+  ).length;
+
+  return completedFromLessons >= lessonCount;
 }
 
 /**

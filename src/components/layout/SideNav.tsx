@@ -5,16 +5,25 @@ import { usePathname } from "next/navigation";
 import {
   BookOpen,
   GraduationCap,
-  Home,
+  LayoutDashboard,
   Settings,
+  TrendingUp,
 } from "@/design-system/icons";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Главная", icon: Home },
+  { href: "/dashboard", label: "Главная", icon: LayoutDashboard },
   { href: "/courses", label: "Курсы", icon: BookOpen },
+  { href: "/progress", label: "Прогресс", icon: TrendingUp },
   { href: "/settings", label: "Ещё", icon: Settings },
 ];
+
+function isActive(pathname: string, href: string) {
+  if (href === "/dashboard") {
+    return pathname === "/dashboard";
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function SideNav() {
   const pathname = usePathname();
@@ -29,16 +38,17 @@ export function SideNav() {
           </span>
         </Link>
       </div>
-      <nav className="flex flex-col gap-1 px-3 pb-6" aria-label="Основная навигация">
+      <nav
+        className="flex flex-col gap-1 px-3 pb-6"
+        aria-label="Основная навигация"
+      >
         {navItems.map(({ href, label, icon: Icon }) => {
-          const active =
-            href === "/"
-              ? false
-              : pathname === href || pathname.startsWith(`${href}/`);
+          const active = isActive(pathname, href);
           return (
             <Link
               key={href}
               href={href}
+              aria-current={active ? "page" : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-[var(--radius-lg)] px-3 py-2.5 text-sm transition-colors duration-[var(--duration-fast)]",
                 active

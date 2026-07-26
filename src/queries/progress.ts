@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LocalProgressRepository } from "@/data/progress/local-repository";
-import { syncProgress } from "@/data/progress/outbox";
+import { canSyncProgress, syncProgress } from "@/data/progress/outbox";
 import type { CourseProgress } from "@/domain/progress/types";
 import { progressKeys } from "./keys";
 
@@ -17,8 +17,10 @@ export function useCourseProgress(
 ) {
   return useQuery({
     queryKey: progressKeys.course(userId, courseId),
-    queryFn: () => getLocalRepo(userId).getCourseProgress(courseId, totalLessons),
+    queryFn: () =>
+      getLocalRepo(userId).getCourseProgress(courseId, totalLessons),
     staleTime: 30_000,
+    enabled: Boolean(userId),
   });
 }
 
@@ -27,10 +29,15 @@ export function useProgressSnapshot(userId: string) {
     queryKey: progressKeys.snapshot(userId),
     queryFn: () => getLocalRepo(userId).getSnapshot(),
     staleTime: 30_000,
+    enabled: Boolean(userId),
   });
 }
 
-export function useStartLesson(userId: string, courseId: string, totalLessons: number) {
+export function useStartLesson(
+  userId: string,
+  courseId: string,
+  totalLessons: number
+) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -41,7 +48,9 @@ export function useStartLesson(userId: string, courseId: string, totalLessons: n
       void queryClient.invalidateQueries({
         queryKey: progressKeys.snapshot(userId),
       });
-      void syncProgress(userId);
+      if (canSyncProgress(userId)) {
+        void syncProgress(userId);
+      }
     },
   });
 }
@@ -72,7 +81,9 @@ export function useCompleteLesson(
       void queryClient.invalidateQueries({
         queryKey: progressKeys.snapshot(userId),
       });
-      void syncProgress(userId);
+      if (canSyncProgress(userId)) {
+        void syncProgress(userId);
+      }
     },
   });
 }

@@ -1,7 +1,19 @@
+import { AUTH_ENABLED } from "@/data/auth/flags";
 import type { ProgressMutation } from "@/domain/progress/types";
 import { LocalProgressRepository } from "./local-repository";
 
+/** Guests keep progress local-only — remote sync requires Auth.js. */
+export function canSyncProgress(userId: string): boolean {
+  if (!AUTH_ENABLED) return false;
+  if (!userId || userId === "guest-ssr") return false;
+  return !userId.startsWith("guest-");
+}
+
 export async function flushOutbox(userId: string): Promise<number> {
+  if (!canSyncProgress(userId)) {
+    return 0;
+  }
+
   const localRepo = new LocalProgressRepository(userId);
   const outbox = await localRepo.getOutbox();
 
@@ -20,6 +32,10 @@ export async function flushOutbox(userId: string): Promise<number> {
       });
 
       if (!response.ok) {
+        // Drop permanently unauthorized items so the outbox cannot grow forever
+        if (response.status === 401 || response.status === 403) {
+          await localRepo.removeFromOutbox(item.mutationId);
+        }
         continue;
       }
 
@@ -34,6 +50,10 @@ export async function flushOutbox(userId: string): Promise<number> {
 }
 
 export async function syncProgress(userId: string): Promise<void> {
+  if (!canSyncProgress(userId)) {
+    return;
+  }
+
   const localRepo = new LocalProgressRepository(userId);
 
   try {

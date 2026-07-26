@@ -27,7 +27,8 @@ export function LearningPathSteps({
     <FadeIn>
       <ol
         className={cn(
-          "flex gap-1 overflow-x-auto pb-1 sm:gap-2",
+          "flex gap-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-2 [&::-webkit-scrollbar]:hidden",
+          "snap-x snap-mandatory",
           className
         )}
         aria-label="Шаги учебного пути"
@@ -38,7 +39,7 @@ export function LearningPathSteps({
           return (
             <li
               key={step.slug}
-              className="flex min-w-0 flex-1 items-center gap-1 sm:gap-2"
+              className="flex min-w-[4.75rem] shrink-0 snap-start items-center gap-1 sm:min-w-0 sm:flex-1 sm:gap-2"
             >
               <div className="flex min-w-0 flex-col items-center gap-2">
                 <span

@@ -8,6 +8,7 @@ import { FadeIn } from "@/components/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScreenContainer } from "@/components/ui/screen-container";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
+import { ReadablePanel } from "@/components/layout/ReadablePanel";
 
 export function ProgressPageClient({
   courses,
@@ -21,17 +22,19 @@ export function ProgressPageClient({
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/progress.jpg"
-        intensity="strong"
+        intensity="reading"
       />
       <ScreenContainer className="relative z-10 pb-8">
         <FadeIn className="space-y-8">
-          <div className="space-y-2 pt-2">
-            <h1 className="font-display text-3xl tracking-tight">Прогресс</h1>
-            <p className="max-w-lg text-muted-foreground">
+          <ReadablePanel className="space-y-2 pt-0">
+            <h1 className="font-display text-3xl tracking-tight text-text-primary">
+              Прогресс
+            </h1>
+            <p className="max-w-lg text-body text-text-secondary">
               Общая картина по курсам. Данные сохраняются локально и
               синхронизируются при входе в аккаунт.
             </p>
-          </div>
+          </ReadablePanel>
           {isLoading ? (
             <div className="space-y-6">
               <Skeleton className="h-40 w-full rounded-[var(--radius-xl)]" />

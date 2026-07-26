@@ -11,6 +11,7 @@ import { sortByLearningPath } from "@/features/catalog/labels";
 import { DashboardPathProgress } from "@/features/dashboard/DashboardPathProgress";
 import { DashboardCourseList } from "@/features/dashboard/DashboardCourseList";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
+import { ReadablePanel } from "@/components/layout/ReadablePanel";
 
 export default async function DashboardPage() {
   const courses = sortByLearningPath(await getCourses());
@@ -28,16 +29,18 @@ export default async function DashboardPage() {
       <ScreenAtmosphere
         src="/images/screens/dashboard.jpg"
         priority
-        intensity="strong"
+        intensity="reading"
       />
       <ScreenContainer className="relative z-10 space-y-10 pb-8">
-        <FadeIn className="space-y-2 pt-2">
-          <p className="text-label">Investment Academy</p>
-          <h1 className="text-heading-1">Учитесь инвестировать спокойно</h1>
-          <p className="max-w-lg text-body text-text-secondary">
-            Курсы открываются по шагам. Завершите уроки и тесты текущего курса —
-            следующий станет доступен.
-          </p>
+        <FadeIn className="pt-2">
+          <ReadablePanel className="space-y-2">
+            <p className="text-label">Investment Academy</p>
+            <h1 className="text-heading-1">Учитесь инвестировать спокойно</h1>
+            <p className="max-w-lg text-body text-text-secondary">
+              Курсы открываются по шагам. Завершите уроки и тесты текущего
+              курса — следующий станет доступен.
+            </p>
+          </ReadablePanel>
         </FadeIn>
 
         <FadeIn delay={0.05}>

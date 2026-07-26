@@ -2,6 +2,7 @@ import Link from "next/link";
 import { GraduationCap } from "@/design-system/icons";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
+import { EducationalDisclaimer } from "@/components/layout/EducationalDisclaimer";
 
 export default function MarketingLayout({
   children,
@@ -29,6 +30,9 @@ export default function MarketingLayout({
         </div>
       </header>
       <div className="relative z-10">{children}</div>
+      <footer className="relative z-10 mx-auto max-w-6xl px-6 py-8">
+        <EducationalDisclaimer />
+      </footer>
     </div>
   );
 }
