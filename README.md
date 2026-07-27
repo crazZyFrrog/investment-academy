@@ -36,6 +36,10 @@ npm run dev
 
 Откройте [http://localhost:3000](http://localhost:3000).
 
+На телефоне в той же Wi‑Fi: `http://<IP-вашего-ПК>:3000` (не `localhost`).
+`npm run dev` слушает `0.0.0.0` и разрешает LAN в `allowedDevOrigins`.
+После смены конфига перезапустите dev-сервер.
+
 ## Scripts
 
 - `npm run dev` — development server

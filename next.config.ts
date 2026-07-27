@@ -9,8 +9,15 @@ const withSerwist = withSerwistInit({
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Playwright and local tooling hit 127.0.0.1; allow Next dev assets.
-  allowedDevOrigins: ["127.0.0.1", "localhost"],
+  // Phone/LAN testing: allow Next dev assets & HMR from local network hosts.
+  // Patterns use hostname wildcards (see Next.js allowedDevOrigins docs).
+  allowedDevOrigins: [
+    "127.0.0.1",
+    "localhost",
+    "192.168.*.*",
+    "10.*.*.*",
+    "172.16.*.*",
+  ],
 };
 
 export default withSerwist(nextConfig);

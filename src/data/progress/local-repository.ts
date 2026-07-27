@@ -11,6 +11,7 @@ import {
   recomputeCourseProgress,
   startLesson,
 } from "@/domain/progress/service";
+import { createId } from "@/lib/id";
 
 function shouldEnqueueOutbox(userId: string): boolean {
   if (!AUTH_ENABLED) return false;
@@ -130,7 +131,7 @@ export class LocalProgressRepository {
     await this.saveSnapshot(nextSnapshot);
     if (shouldEnqueueOutbox(this.userId)) {
       await this.enqueueMutation({
-        mutationId: crypto.randomUUID(),
+        mutationId: createId(),
         courseId,
         lessonId,
         status: "in_progress",
@@ -170,7 +171,7 @@ export class LocalProgressRepository {
     await this.saveSnapshot(nextSnapshot);
     if (shouldEnqueueOutbox(this.userId)) {
       await this.enqueueMutation({
-        mutationId: crypto.randomUUID(),
+        mutationId: createId(),
         courseId,
         lessonId,
         status: "completed",

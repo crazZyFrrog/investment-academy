@@ -1,13 +1,14 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { createId } from "@/lib/id";
 
 const GUEST_ID_KEY = "investment-academy-guest-id";
 
 let cachedGuestId: string | null = null;
 
 function createGuestId(): string {
-  return `guest-${crypto.randomUUID()}`;
+  return `guest-${createId()}`;
 }
 
 /** Browser-only guest identity. Empty string during SSR / before mount. */
