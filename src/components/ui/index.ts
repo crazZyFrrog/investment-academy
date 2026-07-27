@@ -38,7 +38,6 @@ export {
   type CourseDifficulty,
   type CourseDifficultyBadgeProps,
 } from "./course-difficulty-badge";
-export { XpBadge, type XpBadgeProps } from "./xp-badge";
 export {
   DurationBadge,
   formatDuration,

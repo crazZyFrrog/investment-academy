@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Check, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import {
   parseLessonQuizData,
   type LessonQuizItem,
 } from "@/domain/lesson/quiz";
+import { useQuizDraftStore } from "@/stores/quiz-draft-store";
 
 export type { LessonQuizItem };
 
@@ -27,29 +28,43 @@ export function LessonQuiz({
   onPassed,
 }: LessonQuizProps) {
   const items = useMemo(() => parseLessonQuizData(data), [data]);
-  const [selected, setSelected] = useState<Record<number, number | null>>({});
-  const [checked, setChecked] = useState(false);
+  const draft = useQuizDraftStore((state) => state.drafts[id]);
+  const setAnswer = useQuizDraftStore((state) => state.setAnswer);
+  const setChecked = useQuizDraftStore((state) => state.setChecked);
+  const clearQuiz = useQuizDraftStore((state) => state.clearQuiz);
+  const notifiedRef = useRef(false);
 
-  if (items.length === 0) return null;
+  const selected = draft?.selected ?? {};
+  const checked = draft?.checked ?? false;
 
   const answeredCount = items.filter((_, i) => selected[i] != null).length;
-  const allAnswered = answeredCount === items.length;
+  const allAnswered =
+    items.length > 0 && answeredCount === items.length;
   const correctCount = checked
     ? items.filter((item, i) => selected[i] === item.correctIndex).length
     : 0;
   const passed = checked && correctCount === items.length;
 
+  useEffect(() => {
+    if (!passed || notifiedRef.current) return;
+    notifiedRef.current = true;
+    onPassed?.(100);
+  }, [passed, onPassed]);
+
+  if (items.length === 0) return null;
+
   function reset() {
-    setSelected({});
-    setChecked(false);
+    notifiedRef.current = false;
+    clearQuiz(id);
   }
 
   function handleCheck() {
-    setChecked(true);
     const correct = items.filter(
       (item, i) => selected[i] === item.correctIndex
     ).length;
+    setChecked(id, true);
     if (correct === items.length) {
+      notifiedRef.current = true;
       onPassed?.(100);
     }
   }
@@ -70,7 +85,8 @@ export function LessonQuiz({
           {title}
         </h2>
         <p className="mt-2 text-[1.05rem] leading-relaxed text-text-secondary">
-          Ответьте на все вопросы верно, чтобы отметить урок пройденным.
+          Ответьте на все вопросы верно, чтобы отметить урок пройденным. Черновик
+          ответов сохраняется на этом устройстве.
         </p>
       </div>
 
@@ -107,12 +123,7 @@ export function LessonQuiz({
                       role="radio"
                       aria-checked={isSelected}
                       disabled={checked}
-                      onClick={() =>
-                        setSelected((prev) => ({
-                          ...prev,
-                          [index]: optionIndex,
-                        }))
-                      }
+                      onClick={() => setAnswer(id, index, optionIndex)}
                       className={cn(
                         "flex w-full items-start gap-3 rounded-[var(--radius-lg)] border px-4 py-3 text-left text-[0.98rem] leading-snug transition-colors",
                         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",

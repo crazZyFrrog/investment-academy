@@ -93,3 +93,29 @@ export function useSyncProgress(userId: string) {
     mutationFn: () => syncProgress(userId),
   });
 }
+
+export function useResetProgress(userId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      await getLocalRepo(userId).clearProgress();
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: progressKeys.all });
+    },
+  });
+}
+
+export function useImportProgress(userId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (snapshot: import("@/domain/progress/types").ProgressSnapshot) => {
+      await getLocalRepo(userId).saveSnapshot(snapshot);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: progressKeys.all });
+    },
+  });
+}

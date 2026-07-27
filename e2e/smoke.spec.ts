@@ -23,7 +23,7 @@ async function completeFirstLessonQuiz(page: Page) {
   }
 
   await page.getByRole("button", { name: "Проверить ответы" }).click();
-  await expect(page.getByText(/тест сдан/i)).toBeVisible();
+  await expect(page.getByText("· тест сдан")).toBeVisible();
   await page.getByRole("button", { name: /Отметить как прочитанный/i }).click();
   await expect(page.getByText(/Урок завершён/i)).toBeVisible();
 }
@@ -75,12 +75,9 @@ test.describe("smoke + unlock", () => {
   });
 
   test("completing a lesson unlocks the next one", async ({ page }) => {
-    await gotoPath(page, "/courses/investing-fundamentals");
-    await page
-      .getByRole("link", { name: /Что такое инвестирование/i })
-      .click();
-    await expect(page).toHaveURL(
-      /\/courses\/investing-fundamentals\/lessons\/chto-takoe-investirovanie/
+    await gotoPath(
+      page,
+      "/courses/investing-fundamentals/lessons/chto-takoe-investirovanie"
     );
     await expect(
       page.getByRole("heading", { name: /Что такое инвестирование/i })
@@ -135,5 +132,57 @@ test.describe("responsive nav", () => {
     const hasSide = await sideNav.isVisible().catch(() => false);
     const hasMobile = await mobileNav.isVisible().catch(() => false);
     expect(hasSide || hasMobile).toBeTruthy();
+  });
+});
+
+test.describe("guest utilities", () => {
+  test("settings expose theme and progress backup controls", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "desktop smoke only");
+    await gotoPath(page, "/settings");
+    await expect(page.getByRole("heading", { name: "Ещё" })).toBeVisible();
+    await expect(
+      page.getByRole("radiogroup", { name: "Тема оформления" })
+    ).toBeVisible();
+    // Wait for ThemeProvider client hydration (data-theme is set in useLayoutEffect)
+    await expect(page.locator("html")).toHaveAttribute("data-theme", /.+/);
+    await page.locator('[data-theme-option="dark"]').click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.locator('[data-theme-option="dark"]')).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    await expect(
+      page.getByRole("button", { name: /Экспорт/i })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /Сбросить/i })
+    ).toBeVisible();
+  });
+
+  test("catalog search and tags filter courses", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "desktop smoke only");
+    await gotoPath(page, "/courses");
+    await expect(page.getByRole("heading", { name: "Курсы" })).toBeVisible();
+
+    await page.getByRole("button", { name: "ИИС", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Сбросить фильтры" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Практика инвестора в России/i })
+    ).toBeVisible();
+    await expect(
+      page.locator('a[href="/courses/investing-fundamentals"]')
+    ).toHaveCount(0);
+
+    await page.getByRole("button", { name: "Сбросить фильтры" }).click();
+    const search = page.getByPlaceholder("Поиск по названию или тегу…");
+    await search.fill("инфляция");
+    await expect(
+      page.getByRole("link", { name: /Основы мышления инвестора/i })
+    ).toBeVisible();
+    await expect(
+      page.locator('a[href="/courses/russia-practice"]')
+    ).toHaveCount(0);
   });
 });

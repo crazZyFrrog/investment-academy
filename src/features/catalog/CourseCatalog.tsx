@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { CourseSummary } from "@/domain/course/types";
+import { Search, X } from "@/design-system/icons";
 import { CourseCard } from "@/components/course/CourseCard";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
@@ -13,23 +14,53 @@ import { useCourseUnlock } from "@/features/learning/use-course-unlock";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
 import { ReadablePanel } from "@/components/layout/ReadablePanel";
 
-type Filter = "all" | CourseLevelKey;
+type LevelFilter = "all" | CourseLevelKey;
 
-const filters: { id: Filter; label: string }[] = [
+const levelFilters: { id: LevelFilter; label: string }[] = [
   { id: "all", label: "Все" },
   { id: "beginner", label: levelLabels.beginner },
   { id: "intermediate", label: levelLabels.intermediate },
   { id: "advanced", label: levelLabels.advanced },
 ];
 
+function matchesQuery(course: CourseSummary, query: string) {
+  if (!query) return true;
+  const haystack = [course.title, course.description, ...course.tags]
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(query);
+}
+
 export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
-  const [filter, setFilter] = useState<Filter>("all");
+  const [levelFilter, setLevelFilter] = useState<LevelFilter>("all");
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const normalizedQuery = query.trim().toLowerCase();
   const { isUnlocked, isLoading } = useCourseUnlock(courses);
 
+  const allTags = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const course of courses) {
+      for (const tag of course.tags) {
+        counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ru"))
+      .map(([tag]) => tag);
+  }, [courses]);
+
   const visible = useMemo(() => {
-    if (filter === "all") return courses;
-    return courses.filter((course) => course.level === filter);
-  }, [courses, filter]);
+    return courses.filter((course) => {
+      if (levelFilter !== "all" && course.level !== levelFilter) return false;
+      if (tagFilter && !course.tags.includes(tagFilter)) return false;
+      if (!matchesQuery(course, normalizedQuery)) return false;
+      return true;
+    });
+  }, [courses, levelFilter, tagFilter, normalizedQuery]);
+
+  const hasActiveFilters =
+    levelFilter !== "all" || Boolean(tagFilter) || Boolean(query.trim());
 
   return (
     <div className="relative min-h-full">
@@ -52,25 +83,98 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
           </ReadablePanel>
         </FadeIn>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {filters.map((item) => (
-            <Chip
-              key={item.id}
-              selected={filter === item.id}
-              onClick={() => setFilter(item.id)}
-              className="shrink-0 cursor-pointer"
-              role="button"
-              tabIndex={0}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  setFilter(item.id);
-                }
+        <div className="space-y-4">
+          <label className="relative block max-w-xl">
+            <span className="sr-only">Поиск курсов</span>
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-text-tertiary"
+              aria-hidden
+            />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Поиск по названию или тегу…"
+              className="h-11 w-full rounded-[var(--radius-lg)] border border-border bg-surface pr-10 pl-10 text-sm text-text-primary shadow-xs outline-none placeholder:text-text-tertiary focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            {query ? (
+              <button
+                type="button"
+                className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-[var(--radius-md)] p-1.5 text-text-tertiary hover:bg-muted hover:text-text-primary"
+                aria-label="Очистить поиск"
+                onClick={() => setQuery("")}
+              >
+                <X className="size-4" />
+              </button>
+            ) : null}
+          </label>
+
+          <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {levelFilters.map((item) => (
+              <Chip
+                key={item.id}
+                selected={levelFilter === item.id}
+                onClick={() => setLevelFilter(item.id)}
+                className="shrink-0 cursor-pointer"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setLevelFilter(item.id);
+                  }
+                }}
+              >
+                {item.label}
+              </Chip>
+            ))}
+          </div>
+
+          {allTags.length > 0 ? (
+            <div className="space-y-2">
+              <p className="text-caption">Теги</p>
+              <div className="flex flex-wrap gap-2">
+                {allTags.map((tag) => (
+                  <Chip
+                    key={tag}
+                    selected={tagFilter === tag}
+                    onClick={() =>
+                      setTagFilter((current) => (current === tag ? null : tag))
+                    }
+                    className="cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setTagFilter((current) =>
+                          current === tag ? null : tag
+                        );
+                      }
+                    }}
+                  >
+                    {tag}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {hasActiveFilters ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="w-fit px-2"
+              onClick={() => {
+                setLevelFilter("all");
+                setTagFilter(null);
+                setQuery("");
               }}
             >
-              {item.label}
-            </Chip>
-          ))}
+              Сбросить фильтры
+            </Button>
+          ) : null}
         </div>
 
         <div className="grid gap-4 sm:gap-5">
@@ -84,7 +188,7 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
           ))}
           {visible.length === 0 ? (
             <p className="py-12 text-center text-caption">
-              Пока нет курсов на этом уровне.
+              Ничего не найдено. Попробуйте другой запрос или сбросьте фильтры.
             </p>
           ) : null}
         </div>

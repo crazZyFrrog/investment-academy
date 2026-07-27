@@ -10,6 +10,8 @@ import { FadeIn } from "@/components/motion";
 import { InstallPrompt } from "@/features/pwa/InstallPrompt";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
 import { ReadablePanel } from "@/components/layout/ReadablePanel";
+import { ThemeSettings } from "@/features/settings/ThemeSettings";
+import { ProgressBackupSettings } from "@/features/settings/ProgressBackupSettings";
 
 function GuestAccountSection() {
   return (
@@ -64,7 +66,7 @@ export default function SettingsPage() {
           <ReadablePanel className="space-y-3">
             <h1 className="text-heading-1">Ещё</h1>
             <p className="max-w-xl text-body text-text-secondary">
-              Настройки аккаунта и установка приложения на устройство.
+              Тема, локальный прогресс и установка приложения на устройство.
             </p>
           </ReadablePanel>
 
@@ -74,6 +76,9 @@ export default function SettingsPage() {
             ) : (
               <GuestAccountSection />
             )}
+
+            <ThemeSettings />
+            <ProgressBackupSettings />
 
             <Card padding="lg" className="space-y-4">
               <h2 className="text-title text-base">Установить приложение</h2>

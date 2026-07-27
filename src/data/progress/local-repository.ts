@@ -77,6 +77,16 @@ export class LocalProgressRepository {
     await db.put("progress", snapshot, this.userId);
   }
 
+  /** Wipe local progress (and outbox) for this user — guest reset / restore. */
+  async clearProgress(): Promise<void> {
+    const db = await getDb();
+    await db.delete("progress", this.userId);
+    const outbox = await db.getAll("outbox");
+    await Promise.all(
+      outbox.map((item) => db.delete("outbox", item.mutationId))
+    );
+  }
+
   async getCourseProgress(
     courseId: string,
     totalLessons: number

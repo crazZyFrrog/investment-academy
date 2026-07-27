@@ -18,14 +18,14 @@ export default function LoginPage() {
     return (
       <div className="space-y-6 text-center">
         <div className="space-y-2">
-          <h1 className="font-display text-2xl">Guest Mode</h1>
+          <h1 className="font-display text-2xl">Гостевой режим</h1>
           <p className="text-sm text-muted-foreground">
-            Sign-in is temporarily disabled. Continue as a guest — accounts
-            return in Version 1.0.
+            Вход временно отключён. Продолжайте как гость — аккаунт и синхронизация
+            появятся в версии 1.0.
           </p>
         </div>
         <Button className="w-full" asChild>
-          <Link href="/dashboard">Continue as guest</Link>
+          <Link href="/dashboard">Продолжить как гость</Link>
         </Button>
       </div>
     );

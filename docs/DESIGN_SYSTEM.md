@@ -112,7 +112,7 @@ Compose screens from these — do not invent parallel systems.
 | EmptyState | Centered, large radius, soft surface — empty catalog / progress. |
 | Skeleton | Pulse loading; disabled under reduced motion. |
 | Divider | Structural only. |
-| CourseDifficultyBadge / XpBadge / DurationBadge | Presentational meta for lesson scale. |
+| CourseDifficultyBadge / DurationBadge | Presentational meta for lesson scale. |
 
 **Composition over configuration:** pass children and nest primitives instead of adding one-off boolean props for every layout case.
 

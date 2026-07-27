@@ -1,0 +1,73 @@
+import { z } from "zod";
+import type { ProgressSnapshot } from "@/domain/progress/types";
+
+export const PROGRESS_BACKUP_VERSION = 1 as const;
+
+const lessonProgressSchema = z.object({
+  lessonId: z.string(),
+  courseId: z.string(),
+  status: z.enum(["not_started", "in_progress", "completed"]),
+  score: z.number().optional(),
+  startedAt: z.string().optional(),
+  completedAt: z.string().optional(),
+  version: z.number(),
+});
+
+const courseProgressSchema = z.object({
+  courseId: z.string(),
+  completedLessons: z.number(),
+  totalLessons: z.number(),
+  percentComplete: z.number(),
+  lastAccessedAt: z.string().optional(),
+  lessons: z.record(z.string(), lessonProgressSchema),
+});
+
+const progressSnapshotSchema = z.object({
+  userId: z.string(),
+  courses: z.record(z.string(), courseProgressSchema),
+  updatedAt: z.string(),
+});
+
+export const progressBackupSchema = z.object({
+  version: z.literal(PROGRESS_BACKUP_VERSION),
+  exportedAt: z.string(),
+  snapshot: progressSnapshotSchema,
+});
+
+export type ProgressBackup = z.infer<typeof progressBackupSchema>;
+
+export function createProgressBackup(
+  snapshot: ProgressSnapshot
+): ProgressBackup {
+  return {
+    version: PROGRESS_BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    snapshot,
+  };
+}
+
+export function parseProgressBackup(raw: unknown): ProgressBackup {
+  return progressBackupSchema.parse(raw);
+}
+
+export function parseProgressBackupJson(text: string): ProgressBackup {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    throw new Error("Файл не похож на JSON.");
+  }
+  return parseProgressBackup(raw);
+}
+
+/** Remap imported snapshot onto the current guest/session user. */
+export function snapshotForUser(
+  snapshot: ProgressSnapshot,
+  userId: string
+): ProgressSnapshot {
+  return {
+    ...snapshot,
+    userId,
+    updatedAt: new Date().toISOString(),
+  };
+}

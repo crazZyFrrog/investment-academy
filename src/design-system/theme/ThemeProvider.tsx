@@ -34,6 +34,8 @@ function applyThemeClass(resolved: "light" | "dark") {
   const root = document.documentElement;
   root.classList.remove("light", "dark");
   root.classList.add(resolved);
+  root.dataset.theme = resolved;
+  root.style.colorScheme = resolved;
 }
 
 function subscribeSystemTheme(onStoreChange: () => void) {

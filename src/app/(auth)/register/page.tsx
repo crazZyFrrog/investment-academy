@@ -19,14 +19,14 @@ export default function RegisterPage() {
     return (
       <div className="space-y-6 text-center">
         <div className="space-y-2">
-          <h1 className="font-display text-2xl">Guest Mode</h1>
+          <h1 className="font-display text-2xl">Гостевой режим</h1>
           <p className="text-sm text-muted-foreground">
-            Account creation is temporarily disabled. Continue as a guest —
-            registration returns in Version 1.0.
+            Регистрация временно отключена. Продолжайте как гость — создание
+            аккаунта появится в версии 1.0.
           </p>
         </div>
         <Button className="w-full" asChild>
-          <Link href="/dashboard">Continue as guest</Link>
+          <Link href="/dashboard">Продолжить как гость</Link>
         </Button>
       </div>
     );
