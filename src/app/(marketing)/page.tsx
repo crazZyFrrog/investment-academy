@@ -38,13 +38,15 @@ export default function HomePage() {
           <SlideUp delay={0.22}>
             <div className="flex flex-wrap gap-3">
               <Button size="lg" asChild>
-                <Link href="/dashboard">
+                <Link href="/dashboard" prefetch>
                   Начать обучение
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="/courses">Смотреть курсы</Link>
+                <Link href="/courses" prefetch>
+                  Смотреть курсы
+                </Link>
               </Button>
             </div>
           </SlideUp>

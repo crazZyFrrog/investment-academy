@@ -3,6 +3,7 @@ import { GraduationCap } from "@/design-system/icons";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
 import { EducationalDisclaimer } from "@/components/layout/EducationalDisclaimer";
+import { PrefetchRoutes } from "@/components/layout/PrefetchRoutes";
 
 export default function MarketingLayout({
   children,
@@ -11,6 +12,7 @@ export default function MarketingLayout({
 }) {
   return (
     <div className="relative min-h-screen bg-background">
+      <PrefetchRoutes />
       <header className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <Link href="/" className="flex items-center gap-2">
           <GraduationCap className="h-6 w-6 text-primary" />
@@ -25,7 +27,9 @@ export default function MarketingLayout({
             </Button>
           ) : null}
           <Button asChild>
-            <Link href="/dashboard">В академию</Link>
+            <Link href="/dashboard" prefetch>
+              В академию
+            </Link>
           </Button>
         </div>
       </header>
