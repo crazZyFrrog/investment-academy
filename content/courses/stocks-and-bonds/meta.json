@@ -5,7 +5,7 @@
   "level": "beginner",
   "order": 2,
   "tags": ["акции", "облигации", "фонды", "издержки"],
-  "estimatedMinutes": 88,
+  "estimatedMinutes": 80,
   "contentVersion": "3.0.0",
   "lessonOrder": ["akcii", "obligacii", "fondy", "izderzhki"]
 }
