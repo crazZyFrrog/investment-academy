@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ProgressSnapshot } from "@/domain/progress/types";
+import { normalizeGamificationState } from "@/domain/gamification";
 
 export const PROGRESS_BACKUP_VERSION = 1 as const;
 
@@ -22,10 +23,26 @@ const courseProgressSchema = z.object({
   lessons: z.record(z.string(), lessonProgressSchema),
 });
 
+const gamificationSchema = z
+  .object({
+    xp: z.number(),
+    level: z.number(),
+    currentStreak: z.number(),
+    longestStreak: z.number(),
+    lastActivityDate: z.string().nullable(),
+    todayCompletedLessons: z.number(),
+    todayDate: z.string().nullable(),
+    unlockedAchievementIds: z.array(z.string()),
+    activityDates: z.array(z.string()),
+  })
+  .partial()
+  .optional();
+
 const progressSnapshotSchema = z.object({
   userId: z.string(),
   courses: z.record(z.string(), courseProgressSchema),
   updatedAt: z.string(),
+  gamification: gamificationSchema,
 });
 
 export const progressBackupSchema = z.object({
@@ -34,7 +51,11 @@ export const progressBackupSchema = z.object({
   snapshot: progressSnapshotSchema,
 });
 
-export type ProgressBackup = z.infer<typeof progressBackupSchema>;
+export type ProgressBackup = {
+  version: typeof PROGRESS_BACKUP_VERSION;
+  exportedAt: string;
+  snapshot: ProgressSnapshot;
+};
 
 export function createProgressBackup(
   snapshot: ProgressSnapshot
@@ -42,12 +63,25 @@ export function createProgressBackup(
   return {
     version: PROGRESS_BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
-    snapshot,
+    snapshot: {
+      ...snapshot,
+      gamification: normalizeGamificationState(snapshot.gamification),
+    },
   };
 }
 
 export function parseProgressBackup(raw: unknown): ProgressBackup {
-  return progressBackupSchema.parse(raw);
+  const parsed = progressBackupSchema.parse(raw);
+  return {
+    version: parsed.version,
+    exportedAt: parsed.exportedAt,
+    snapshot: {
+      userId: parsed.snapshot.userId,
+      courses: parsed.snapshot.courses,
+      updatedAt: parsed.snapshot.updatedAt,
+      gamification: normalizeGamificationState(parsed.snapshot.gamification),
+    },
+  };
 }
 
 export function parseProgressBackupJson(text: string): ProgressBackup {
@@ -69,5 +103,6 @@ export function snapshotForUser(
     ...snapshot,
     userId,
     updatedAt: new Date().toISOString(),
+    gamification: normalizeGamificationState(snapshot.gamification),
   };
 }

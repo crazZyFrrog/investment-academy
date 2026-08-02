@@ -92,13 +92,13 @@ export function getCourseAccent(slug: string) {
 
 /** Local cover images for course cards (optional) */
 export const courseCovers: Record<string, string> = {
-  "investing-fundamentals": "/images/covers/fundamentals.jpg",
-  "stocks-and-bonds": "/images/covers/stocks-bonds.jpg",
-  "portfolio-basics": "/images/covers/portfolio.jpg",
-  "russia-practice": "/images/covers/russia-practice.jpg",
-  "advanced-behavior": "/images/covers/advanced-behavior.jpg",
-  "advanced-portfolio": "/images/covers/advanced-portfolio.jpg",
-  "advanced-products": "/images/covers/advanced-products.jpg",
+  "investing-fundamentals": "/images/covers/fundamentals-living.jpg",
+  "stocks-and-bonds": "/images/covers/stocks-bonds-living.jpg",
+  "portfolio-basics": "/images/covers/portfolio-living.jpg",
+  "russia-practice": "/images/covers/russia-practice-living.jpg",
+  "advanced-behavior": "/images/covers/advanced-behavior-system.jpg",
+  "advanced-portfolio": "/images/covers/advanced-portfolio-system.jpg",
+  "advanced-products": "/images/covers/advanced-products-system.jpg",
 };
 
 export function getCourseCover(slug: string): string | undefined {

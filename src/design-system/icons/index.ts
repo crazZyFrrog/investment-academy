@@ -18,6 +18,7 @@ export {
   Cloud,
   CloudOff,
   Download,
+  Flame,
   GraduationCap,
   Home,
   Info,

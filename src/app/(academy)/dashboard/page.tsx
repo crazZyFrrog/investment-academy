@@ -5,6 +5,7 @@ import { ScreenContainer } from "@/components/ui/screen-container";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/motion";
 import { ContinueLearningCard } from "@/features/dashboard/ContinueLearningCard";
+import { DailyHabitCard } from "@/features/dashboard/DailyHabitCard";
 import { DailyInsightCard } from "@/features/dashboard/DailyInsightCard";
 import { ArrowRight } from "@/design-system/icons";
 import { sortByLearningPath } from "@/features/catalog/labels";
@@ -44,10 +45,16 @@ export default async function DashboardPage() {
         </FadeIn>
 
         <FadeIn delay={0.05}>
-          <ContinueLearningCard
-            courses={courses}
-            lessonsByCourseId={lessonsByCourseId}
-          />
+          <div className="space-y-4">
+            <DailyHabitCard
+              courses={courses}
+              lessonsByCourseId={lessonsByCourseId}
+            />
+            <ContinueLearningCard
+              courses={courses}
+              lessonsByCourseId={lessonsByCourseId}
+            />
+          </div>
         </FadeIn>
 
         <section className="space-y-5">

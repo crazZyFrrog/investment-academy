@@ -1,3 +1,5 @@
+import type { GamificationState } from "@/domain/gamification/types";
+
 export type LessonStatus = "not_started" | "in_progress" | "completed";
 
 export interface LessonProgress {
@@ -23,6 +25,8 @@ export interface ProgressSnapshot {
   userId: string;
   courses: Record<string, CourseProgress>;
   updatedAt: string;
+  /** Present on new snapshots; older local data may omit it. */
+  gamification?: GamificationState;
 }
 
 export interface ProgressMutation {
@@ -38,3 +42,5 @@ export interface SyncOutboxItem extends ProgressMutation {
   retries: number;
   lastAttemptAt?: string;
 }
+
+export type { GamificationState };

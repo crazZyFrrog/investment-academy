@@ -11,6 +11,7 @@ import {
 } from "@/design-system/icons";
 import type { CourseSummary } from "@/domain/course/types";
 import type { LessonSummary } from "@/domain/lesson/types";
+import type { LessonCompletedReward } from "@/domain/gamification/types";
 import { useUserId } from "@/hooks/use-user-id";
 import {
   useCompleteLesson,
@@ -21,13 +22,14 @@ import { Button } from "@/components/ui/button";
 import { CelebrateComplete, FadeIn } from "@/components/motion";
 import { LessonMarkdown } from "@/components/lesson/LessonMarkdown";
 import { Progress } from "@/components/ui/progress";
-import { formatMinutes } from "@/features/catalog/labels";
+import { formatMinutes, learningPathOrder } from "@/features/catalog/labels";
 import { useCourseUnlock } from "@/features/learning/use-course-unlock";
 import { getLearningPathIndex } from "@/features/learning/unlock";
 import {
   getLessonLockReason,
   isLessonContentUnlocked,
 } from "@/features/learning/lesson-unlock";
+import { LessonRewardCard } from "@/features/learning/LessonRewardCard";
 
 export function LessonReader({
   courseSlug,
@@ -56,6 +58,7 @@ export function LessonReader({
   const completeLesson = useCompleteLesson(userId, courseId, totalLessons);
   const hasStartedRef = useRef(false);
   const [quizPassed, setQuizPassed] = useState(false);
+  const [reward, setReward] = useState<LessonCompletedReward | null>(null);
 
   const { isUnlocked, getLockReason, isLoading: unlockLoading } =
     useCourseUnlock(pathCourses);
@@ -86,7 +89,17 @@ export function LessonReader({
 
   const canComplete =
     isCompleted || !hasQuiz || quizPassed || (lessonProgress?.score ?? 0) >= 100;
-  const nextLocked = Boolean(next) && !isCompleted;
+  const nextLocked = Boolean(next) && !isCompleted && !reward;
+
+  const pathIndex = getLearningPathIndex(courseSlug);
+  const nextCourseSlug =
+    pathIndex >= 0 && pathIndex < learningPathOrder.length - 1
+      ? learningPathOrder[pathIndex + 1]
+      : null;
+  const nextCourse = nextCourseSlug
+    ? pathCourses.find((item) => item.slug === nextCourseSlug)
+    : null;
+  const isLastLesson = !next;
 
   useEffect(() => {
     if (contentLocked) return;
@@ -146,6 +159,21 @@ export function LessonReader({
     );
   }
 
+  const rewardNextHref = next
+    ? `/courses/${courseSlug}/lessons/${next.slug}`
+    : nextCourse
+      ? `/courses/${nextCourse.slug}`
+      : reward?.dailyGoalCompleted
+        ? "/dashboard"
+        : `/courses/${courseSlug}`;
+  const rewardNextLabel = next
+    ? "К следующему уроку"
+    : nextCourse
+      ? "Начать следующий курс"
+      : reward?.dailyGoalCompleted
+        ? "К дашборду"
+        : "К программе курса";
+
   return (
     <div className="min-h-dvh bg-background">
       <header className="sticky top-0 z-[var(--z-sticky)] border-b border-border bg-background/95 backdrop-blur-sm">
@@ -199,7 +227,14 @@ export function LessonReader({
           id="lesson-complete"
           className="mt-12 scroll-mt-28 space-y-4 border-t border-border pt-8"
         >
-          {isCompleted ? (
+          {reward ? (
+            <LessonRewardCard
+              reward={reward}
+              nextHref={rewardNextHref}
+              nextLabel={rewardNextLabel}
+              courseCompleted={isLastLesson}
+            />
+          ) : isCompleted ? (
             <CelebrateComplete>
               <div className="flex items-start gap-3 rounded-[var(--radius-xl)] border border-primary/20 bg-primary/[0.05] px-4 py-4">
                 <Check className="mt-0.5 size-5 shrink-0 text-primary" />
@@ -211,7 +246,7 @@ export function LessonReader({
                     Прогресс сохранён на этом устройстве.
                     {next
                       ? " Можно переходить к следующему уроку."
-                      : " Курс почти готов — вернитесь к программе."}
+                      : " Курс завершён — можно открыть следующий шаг."}
                   </p>
                 </div>
               </div>
@@ -225,24 +260,33 @@ export function LessonReader({
               ) : null}
               {hasQuiz && canComplete && !isCompleted ? (
                 <p className="rounded-[var(--radius-lg)] border border-success/25 bg-success/[0.06] px-4 py-3 text-caption text-text-primary">
-                  Тест сдан. Отметьте урок пройденным, чтобы открыть следующий.
+                  Тест сдан. Завершите урок, чтобы получить XP и открыть
+                  следующий шаг.
                 </p>
               ) : null}
               <Button
                 size="lg"
                 className="w-full"
                 disabled={!canComplete || completeLesson.isPending}
-                onClick={() =>
-                  completeLesson.mutate({
-                    lessonId: lesson.id,
-                    score: hasQuiz ? 100 : undefined,
-                  })
-                }
+                onClick={() => {
+                  completeLesson.mutate(
+                    {
+                      lessonId: lesson.id,
+                      score: hasQuiz ? 100 : undefined,
+                      pathCourseCount: learningPathOrder.length,
+                    },
+                    {
+                      onSuccess: (result) => {
+                        if (result.reward) {
+                          setReward(result.reward);
+                        }
+                      },
+                    }
+                  );
+                }}
               >
                 <Check className="size-4" />
-                {completeLesson.isPending
-                  ? "Сохраняем…"
-                  : "Отметить как прочитанный"}
+                {completeLesson.isPending ? "Сохраняем…" : "Завершить урок"}
               </Button>
             </div>
           )}
@@ -300,7 +344,9 @@ export function LessonReader({
             )
           ) : (
             <Button variant="secondary" className="flex-1" asChild>
-              <Link href={`/courses/${courseSlug}`}>К программе курса</Link>
+              <Link href={nextCourse ? `/courses/${nextCourse.slug}` : `/courses/${courseSlug}`}>
+                {nextCourse ? "Следующий курс" : "К программе курса"}
+              </Link>
             </Button>
           )}
         </nav>

@@ -1,14 +1,20 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LocalProgressRepository } from "@/data/progress/local-repository";
+import {
+  LocalProgressRepository,
+  type CompleteLessonResult,
+} from "@/data/progress/local-repository";
 import { canSyncProgress, syncProgress } from "@/data/progress/outbox";
 import type { CourseProgress } from "@/domain/progress/types";
+import { learningPathOrder } from "@/features/catalog/labels";
 import { progressKeys } from "./keys";
 
 function getLocalRepo(userId: string) {
   return new LocalProgressRepository(userId);
 }
+
+export type { CompleteLessonResult };
 
 export function useCourseProgress(
   userId: string,
@@ -66,18 +72,24 @@ export function useCompleteLesson(
     mutationFn: ({
       lessonId,
       score,
+      pathCourseCount = learningPathOrder.length,
     }: {
       lessonId: string;
       score?: number;
+      pathCourseCount?: number;
     }) =>
       getLocalRepo(userId).completeLesson(
         courseId,
         lessonId,
         totalLessons,
-        score
+        score,
+        pathCourseCount
       ),
-    onSuccess: (data: CourseProgress) => {
-      queryClient.setQueryData(progressKeys.course(userId, courseId), data);
+    onSuccess: (data: CompleteLessonResult) => {
+      queryClient.setQueryData(
+        progressKeys.course(userId, courseId),
+        data.courseProgress
+      );
       void queryClient.invalidateQueries({
         queryKey: progressKeys.snapshot(userId),
       });

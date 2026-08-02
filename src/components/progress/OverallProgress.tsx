@@ -14,6 +14,7 @@ import {
   type CourseProgressItem,
 } from "@/components/progress/CourseProgressList";
 import { CompositionBar } from "@/components/progress/CompositionBar";
+import { GamificationPanel } from "@/components/progress/GamificationPanel";
 import { FadeIn, SlideUp } from "@/components/motion";
 
 export function OverallProgress({
@@ -57,19 +58,24 @@ export function OverallProgress({
 
   if (items.length === 0) {
     return (
-      <EmptyState
-        icon={<BookOpen />}
-        title="Пока нет прогресса"
-        description="Начните первый урок — здесь появится общая картина по курсам."
-        action={
-          <Button asChild>
-            <Link href="/courses">
-              К каталогу
-              <ArrowRight className="size-4" />
-            </Link>
-          </Button>
-        }
-      />
+      <div className="space-y-8">
+        <FadeIn>
+          <GamificationPanel gamification={snapshot.gamification} />
+        </FadeIn>
+        <EmptyState
+          icon={<BookOpen />}
+          title="Пока нет прогресса"
+          description="Начните первый урок — здесь появится общая картина по курсам."
+          action={
+            <Button asChild>
+              <Link href="/courses">
+                К каталогу
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          }
+        />
+      </div>
     );
   }
 
@@ -88,6 +94,10 @@ export function OverallProgress({
 
   return (
     <div className="space-y-8">
+      <FadeIn>
+        <GamificationPanel gamification={snapshot.gamification} />
+      </FadeIn>
+
       <SlideUp>
         <Card className="flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8">
           <ProgressRing value={overall} size={128} strokeWidth={9} label="всего" />

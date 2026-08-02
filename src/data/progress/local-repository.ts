@@ -5,6 +5,12 @@ import type {
   ProgressSnapshot,
   SyncOutboxItem,
 } from "@/domain/progress/types";
+import type { LessonCompletedReward } from "@/domain/gamification/types";
+import {
+  applyLessonCompleted,
+  emptyGamificationState,
+  normalizeGamificationState,
+} from "@/domain/gamification";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import {
   completeLesson,
@@ -12,6 +18,7 @@ import {
   startLesson,
 } from "@/domain/progress/service";
 import { createId } from "@/lib/id";
+import { learningPathOrder } from "@/features/catalog/labels";
 
 function shouldEnqueueOutbox(userId: string): boolean {
   if (!AUTH_ENABLED) return false;
@@ -61,7 +68,22 @@ function emptySnapshot(userId: string): ProgressSnapshot {
     userId,
     courses: {},
     updatedAt: new Date().toISOString(),
+    gamification: emptyGamificationState(),
   };
+}
+
+function withNormalizedGamification(
+  snapshot: ProgressSnapshot
+): ProgressSnapshot {
+  return {
+    ...snapshot,
+    gamification: normalizeGamificationState(snapshot.gamification),
+  };
+}
+
+export interface CompleteLessonResult {
+  courseProgress: CourseProgress;
+  reward: LessonCompletedReward | null;
 }
 
 export class LocalProgressRepository {
@@ -70,12 +92,16 @@ export class LocalProgressRepository {
   async getSnapshot(): Promise<ProgressSnapshot> {
     const db = await getDb();
     const snapshot = await db.get("progress", this.userId);
-    return snapshot ?? emptySnapshot(this.userId);
+    return withNormalizedGamification(snapshot ?? emptySnapshot(this.userId));
   }
 
   async saveSnapshot(snapshot: ProgressSnapshot): Promise<void> {
     const db = await getDb();
-    await db.put("progress", snapshot, this.userId);
+    await db.put(
+      "progress",
+      withNormalizedGamification(snapshot),
+      this.userId
+    );
   }
 
   /** Wipe local progress (and outbox) for this user — guest reset / restore. */
@@ -126,6 +152,7 @@ export class LocalProgressRepository {
       ...snapshot,
       courses: { ...snapshot.courses, [courseId]: updated },
       updatedAt: new Date().toISOString(),
+      gamification: normalizeGamificationState(snapshot.gamification),
     };
 
     await this.saveSnapshot(nextSnapshot);
@@ -146,12 +173,16 @@ export class LocalProgressRepository {
     courseId: string,
     lessonId: string,
     totalLessons: number,
-    score?: number
-  ): Promise<CourseProgress> {
+    score?: number,
+    pathCourseCount: number = learningPathOrder.length
+  ): Promise<CompleteLessonResult> {
     const snapshot = await this.getSnapshot();
     const current =
       snapshot.courses[courseId] ??
       recomputeCourseProgress(courseId, totalLessons, {});
+
+    const wasAlreadyCompleted =
+      current.lessons[lessonId]?.status === "completed";
 
     const updated = recomputeCourseProgress(
       courseId,
@@ -162,14 +193,42 @@ export class LocalProgressRepository {
         score
       ).lessons
     );
+
+    const courses = { ...snapshot.courses, [courseId]: updated };
+    let reward: LessonCompletedReward | null = null;
+    let gamification = normalizeGamificationState(snapshot.gamification);
+
+    if (!wasAlreadyCompleted) {
+      const courseJustCompleted =
+        updated.totalLessons > 0 &&
+        updated.completedLessons >= updated.totalLessons;
+
+      reward = applyLessonCompleted({
+        state: gamification,
+        courses: Object.fromEntries(
+          Object.entries(courses).map(([id, course]) => [
+            id,
+            {
+              completedLessons: course.completedLessons,
+              totalLessons: course.totalLessons,
+            },
+          ])
+        ),
+        courseJustCompleted,
+        pathCourseCount,
+      });
+      gamification = reward.state;
+    }
+
     const nextSnapshot: ProgressSnapshot = {
       ...snapshot,
-      courses: { ...snapshot.courses, [courseId]: updated },
+      courses,
       updatedAt: new Date().toISOString(),
+      gamification,
     };
 
     await this.saveSnapshot(nextSnapshot);
-    if (shouldEnqueueOutbox(this.userId)) {
+    if (shouldEnqueueOutbox(this.userId) && !wasAlreadyCompleted) {
       await this.enqueueMutation({
         mutationId: createId(),
         courseId,
@@ -180,7 +239,7 @@ export class LocalProgressRepository {
       });
     }
 
-    return updated;
+    return { courseProgress: updated, reward };
   }
 
   async enqueueMutation(mutation: ProgressMutation): Promise<void> {
@@ -238,10 +297,23 @@ export class LocalProgressRepository {
       );
     }
 
+    // Prefer higher XP when merging remote/local gamification for MVP.
+    const localG = normalizeGamificationState(local.gamification);
+    const remoteG = normalizeGamificationState(remote.gamification);
+    const gamification =
+      remoteG.xp > localG.xp
+        ? remoteG
+        : localG.xp > remoteG.xp
+          ? localG
+          : localG.longestStreak >= remoteG.longestStreak
+            ? localG
+            : remoteG;
+
     const merged: ProgressSnapshot = {
       userId: this.userId,
       courses: mergedCourses,
       updatedAt: new Date().toISOString(),
+      gamification,
     };
 
     await this.saveSnapshot(merged);
