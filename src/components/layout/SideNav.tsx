@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BookOpen,
   Bookmark,
+  Gift,
   GraduationCap,
   LayoutDashboard,
   Settings,
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/dashboard", label: "Главная", icon: LayoutDashboard },
   { href: "/courses", label: "Курсы", icon: BookOpen },
+  { href: "/rewards", label: "Награды", icon: Gift },
   { href: "/glossary", label: "Словарь", icon: Bookmark },
   { href: "/progress", label: "Прогресс", icon: TrendingUp },
   { href: "/settings", label: "Ещё", icon: Settings },

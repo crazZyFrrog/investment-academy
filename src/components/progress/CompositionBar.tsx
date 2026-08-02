@@ -10,6 +10,7 @@ export interface CompositionSegment {
   title: string;
   /** Relative weight in the bar (e.g. completed lessons or percent) */
   weight: number;
+  color?: string;
 }
 
 export interface CompositionBarProps {
@@ -43,7 +44,7 @@ export function CompositionBar({ segments, className }: CompositionBarProps) {
         {segments.map((segment, index) => {
           const pct = (segment.weight / total) * 100;
           if (pct <= 0) return null;
-          const hex = getCourseAccentHex(segment.slug);
+          const hex = segment.color ?? getCourseAccentHex(segment.slug);
 
           return (
             <motion.div
@@ -70,7 +71,7 @@ export function CompositionBar({ segments, className }: CompositionBarProps) {
         {segments.map((segment) => {
           const pct = Math.round((segment.weight / total) * 100);
           if (segment.weight <= 0) return null;
-          const hex = getCourseAccentHex(segment.slug);
+          const hex = segment.color ?? getCourseAccentHex(segment.slug);
 
           return (
             <li

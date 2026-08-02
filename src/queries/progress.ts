@@ -161,3 +161,23 @@ export function useRecordReview(
     },
   });
 }
+
+export function useRedeemReward(userId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      rewardId,
+      coursesBySlug,
+    }: {
+      rewardId: string;
+      coursesBySlug: Map<
+        string,
+        Pick<import("@/domain/course/types").CourseSummary, "id" | "slug" | "lessonCount">
+      >;
+    }) => getLocalRepo(userId).redeemReward(rewardId, coursesBySlug),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: progressKeys.all });
+    },
+  });
+}

@@ -12,6 +12,7 @@ import { ContinueLearningCard } from "@/features/dashboard/ContinueLearningCard"
 import { DailyHabitCard } from "@/features/dashboard/DailyHabitCard";
 import { DailyInsightCard } from "@/features/dashboard/DailyInsightCard";
 import { ReviewDueCard } from "@/features/review/ReviewDueCard";
+import { SimulatorPromoCard } from "@/features/dashboard/SimulatorPromoCard";
 import { ArrowRight } from "@/design-system/icons";
 import { sortByLearningPath } from "@/features/catalog/labels";
 import { DashboardPathProgress } from "@/features/dashboard/DashboardPathProgress";
@@ -70,6 +71,7 @@ export default async function DashboardPage() {
               courses={courses}
               lessonsByCourseId={lessonsByCourseId}
             />
+            <SimulatorPromoCard courses={courses} />
           </div>
         </FadeIn>
 

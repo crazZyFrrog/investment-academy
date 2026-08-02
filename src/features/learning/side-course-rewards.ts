@@ -2,23 +2,28 @@ import type { ProgressSnapshot } from "@/domain/progress/types";
 import type { CourseSummary } from "@/domain/course/types";
 import { learningPathOrder } from "@/features/catalog/labels";
 import { normalizeGamificationState } from "@/domain/gamification";
+import {
+  getRewardForCourseSlug,
+  getRewardLockReason,
+  isRewardUnlocked,
+} from "@/domain/rewards";
 
-/** Reward gates for side courses (outside the sequential main path). */
+/** @deprecated Use REWARD_CATALOG from @/domain/rewards */
 export const sideCourseRewards = {
   "first-100k": {
     minPathCourses: 1,
     minXp: 100,
-    label: "1 курс пути и 100 XP",
+    label: "100 XP",
   },
   dividends: {
     minPathCourses: 2,
     minXp: 250,
-    label: "2 курса пути и 250 XP",
+    label: "250 XP",
   },
   "crypto-without-illusions": {
     minPathCourses: 4,
     minXp: 500,
-    label: "4 курса пути и 500 XP",
+    label: "500 XP",
   },
 } as const;
 
@@ -67,10 +72,9 @@ export function isSideCourseRewardUnlocked(
   coursesBySlug: Map<string, Pick<CourseSummary, "id" | "slug" | "lessonCount">>
 ): boolean {
   if (!isSideCourseSlug(slug)) return true;
-  const req = sideCourseRewards[slug];
-  const pathDone = countCompletedPathCourses(snapshot, coursesBySlug);
-  const xp = getSnapshotXp(snapshot);
-  return pathDone >= req.minPathCourses && xp >= req.minXp;
+  const reward = getRewardForCourseSlug(slug);
+  if (!reward) return false;
+  return isRewardUnlocked(reward.id, snapshot);
 }
 
 export function getSideCourseLockReason(
@@ -79,11 +83,7 @@ export function getSideCourseLockReason(
   coursesBySlug: Map<string, Pick<CourseSummary, "id" | "slug" | "lessonCount">>
 ): string | null {
   if (!isSideCourseSlug(slug)) return null;
-  if (isSideCourseRewardUnlocked(slug, snapshot, coursesBySlug)) return null;
-
-  const req = sideCourseRewards[slug];
-  const pathDone = countCompletedPathCourses(snapshot, coursesBySlug);
-  const xp = getSnapshotXp(snapshot);
-
-  return `Награда за прогресс: нужно ${req.label} (сейчас ${pathDone} из ${req.minPathCourses} курсов пути, ${xp} из ${req.minXp} XP).`;
+  const reward = getRewardForCourseSlug(slug);
+  if (!reward) return null;
+  return getRewardLockReason(reward.id, snapshot, coursesBySlug);
 }

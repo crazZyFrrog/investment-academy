@@ -20,6 +20,8 @@ import {
 } from "@/domain/progress/service";
 import { createId } from "@/lib/id";
 import { learningPathOrder } from "@/features/catalog/labels";
+import { redeemReward as redeemRewardInDomain } from "@/domain/rewards";
+import type { CourseSummary } from "@/domain/course/types";
 
 function shouldEnqueueOutbox(userId: string): boolean {
   if (!AUTH_ENABLED) return false;
@@ -79,6 +81,9 @@ function withNormalizedGamification(
   return {
     ...snapshot,
     gamification: normalizeGamificationState(snapshot.gamification),
+    redeemedRewardIds: Array.isArray(snapshot.redeemedRewardIds)
+      ? [...new Set(snapshot.redeemedRewardIds.filter((id) => typeof id === "string"))]
+      : [],
   };
 }
 
@@ -347,9 +352,31 @@ export class LocalProgressRepository {
       courses: mergedCourses,
       updatedAt: new Date().toISOString(),
       gamification,
+      redeemedRewardIds: [
+        ...new Set([
+          ...(local.redeemedRewardIds ?? []),
+          ...(remote.redeemedRewardIds ?? []),
+        ]),
+      ],
     };
 
     await this.saveSnapshot(merged);
     return merged;
+  }
+
+  async redeemReward(
+    rewardId: string,
+    coursesBySlug: Map<
+      string,
+      Pick<CourseSummary, "id" | "slug" | "lessonCount">
+    >
+  ): Promise<ProgressSnapshot> {
+    const snapshot = await this.getSnapshot();
+    const result = redeemRewardInDomain(snapshot, rewardId, coursesBySlug);
+    if (!result.ok) {
+      throw new Error(result.error);
+    }
+    await this.saveSnapshot(result.snapshot);
+    return result.snapshot;
   }
 }

@@ -45,6 +45,7 @@ const progressSnapshotSchema = z.object({
   courses: z.record(z.string(), courseProgressSchema),
   updatedAt: z.string(),
   gamification: gamificationSchema,
+  redeemedRewardIds: z.array(z.string()).optional(),
 });
 
 export const progressBackupSchema = z.object({
@@ -82,6 +83,7 @@ export function parseProgressBackup(raw: unknown): ProgressBackup {
       courses: parsed.snapshot.courses,
       updatedAt: parsed.snapshot.updatedAt,
       gamification: normalizeGamificationState(parsed.snapshot.gamification),
+      redeemedRewardIds: parsed.snapshot.redeemedRewardIds,
     },
   };
 }

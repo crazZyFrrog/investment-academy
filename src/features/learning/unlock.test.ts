@@ -124,7 +124,7 @@ describe("course unlock", () => {
     expect(getContinueCourseSlug(courses, doneFirst)).toBe("stocks-and-bonds");
   });
 
-  it("locks side courses until path progress and XP thresholds are met", () => {
+  it("locks side courses until the reward is redeemed", () => {
     const bySlug = buildCoursesBySlug([
       ...courses,
       { id: "first-100k", slug: "first-100k", lessonCount: 4 },
@@ -146,9 +146,18 @@ describe("course unlock", () => {
         unlockedAchievementIds: [],
         activityDates: ["2026-01-01"],
       },
+      redeemedRewardIds: [] as string[],
     };
     expect(isCourseContentUnlocked("first-100k", doneFirst, bySlug)).toBe(
-      true
+      false
     );
+
+    expect(
+      isCourseContentUnlocked(
+        "first-100k",
+        { ...doneFirst, redeemedRewardIds: ["first-100k"] },
+        bySlug
+      )
+    ).toBe(true);
   });
 });

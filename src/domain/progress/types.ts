@@ -31,6 +31,8 @@ export interface ProgressSnapshot {
   updatedAt: string;
   /** Present on new snapshots; older local data may omit it. */
   gamification?: GamificationState;
+  /** Reward ids the user spent XP to unlock. */
+  redeemedRewardIds?: string[];
 }
 
 export interface ProgressMutation {
