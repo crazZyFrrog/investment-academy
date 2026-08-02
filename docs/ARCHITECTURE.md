@@ -72,3 +72,10 @@ npm run dev
 ```
 
 Set `DATABASE_URL` and `AUTH_SECRET` for authenticated remote sync.
+
+## Testing layout
+
+- Unit tests: co-located in `src/**/*.test.ts` (Vitest)
+- E2E smoke: `tests/e2e/` (Playwright)
+
+See [tests/README.md](../tests/README.md).

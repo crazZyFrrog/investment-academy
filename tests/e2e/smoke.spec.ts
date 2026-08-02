@@ -24,7 +24,7 @@ async function completeFirstLessonQuiz(page: Page) {
 
   await page.getByRole("button", { name: "Проверить ответы" }).click();
   await expect(page.getByText("· тест сдан")).toBeVisible();
-  await page.getByRole("button", { name: /Отметить как прочитанный/i }).click();
+  await page.getByRole("button", { name: /Завершить урок/i }).click();
   await expect(page.getByText(/Урок завершён/i)).toBeVisible();
 }
 
@@ -82,7 +82,6 @@ test.describe("smoke + unlock", () => {
     await expect(
       page.getByRole("heading", { name: /Что такое инвестирование/i })
     ).toBeVisible({ timeout: 30_000 });
-    // MDX hydrates client-only; wait for quiz before interacting
     await expect(
       page.getByRole("heading", { name: "Проверьте себя" })
     ).toBeVisible({ timeout: 30_000 });
@@ -101,7 +100,7 @@ test.describe("smoke + unlock", () => {
       /\/courses\/investing-fundamentals\/lessons\/inflyaciya/
     );
     await expect(
-      page.getByRole("button", { name: /Отметить как прочитанный/i })
+      page.getByRole("button", { name: /Завершить урок/i })
     ).toBeVisible({ timeout: 30_000 });
     await expect(
       page.getByRole("heading", { name: /Урок пока закрыт/i })
@@ -145,7 +144,6 @@ test.describe("guest utilities", () => {
     await expect(
       page.getByRole("radiogroup", { name: "Тема оформления" })
     ).toBeVisible();
-    // Wait for ThemeProvider client hydration (data-theme is set in useLayoutEffect)
     await expect(page.locator("html")).toHaveAttribute("data-theme", /.+/);
     await page.locator('[data-theme-option="dark"]').click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");

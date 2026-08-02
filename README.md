@@ -66,7 +66,7 @@ npm run lighthouse     # BASE_URL=http://127.0.0.1:3000 по умолчанию
 
 ## Architecture
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
 
 ## Stack
 
