@@ -4,7 +4,7 @@ import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
 export default function AboutPage() {
   return (
     <>
-      <ScreenAtmosphere src="/images/screens/about.jpg" intensity="strong" />
+      <ScreenAtmosphere src="/images/screens/about.jpg" intensity="catalog" />
       <main className="relative z-10 mx-auto max-w-3xl px-6 py-16 sm:py-20">
         <FadeIn>
           <article className="space-y-8 rounded-[var(--radius-2xl)] border border-border/80 bg-surface/95 px-6 py-8 shadow-sm backdrop-blur-sm sm:px-10 sm:py-10">

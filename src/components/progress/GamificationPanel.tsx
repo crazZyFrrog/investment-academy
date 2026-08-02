@@ -67,7 +67,7 @@ export function GamificationPanel({
               <Flame className="size-4" aria-hidden />
               {state.currentStreak}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-lg)] bg-primary/10 px-3 py-2 text-sm font-medium text-primary">
+            <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-lg)] bg-accent/15 px-3 py-2 text-sm font-medium text-accent">
               <Zap className="size-4" aria-hidden />
               {state.xp} XP
             </span>
@@ -104,8 +104,8 @@ export function GamificationPanel({
                     "size-3 rounded-sm sm:size-3.5",
                     isActive
                       ? "bg-primary"
-                      : "bg-muted",
-                    isToday && "ring-2 ring-primary/35 ring-offset-1 ring-offset-surface"
+                      : "bg-primary/12",
+                    isToday && "ring-2 ring-accent/50 ring-offset-1 ring-offset-surface"
                   )}
                   aria-label={
                     isActive ? `Активность ${date}` : `Нет активности ${date}`
@@ -134,7 +134,7 @@ export function GamificationPanel({
                   className={cn(
                     "flex size-9 shrink-0 items-center justify-center rounded-[var(--radius-lg)]",
                     isUnlocked
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-accent/15 text-accent"
                       : "bg-muted text-text-tertiary"
                   )}
                 >

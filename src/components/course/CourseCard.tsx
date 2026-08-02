@@ -35,49 +35,51 @@ export function CourseCard({
       >
         <div
           className={cn(
-            "relative flex h-28 items-end overflow-hidden px-5 pb-4 sm:h-32",
+            "relative h-36 overflow-hidden sm:h-40",
             !cover && accent.bg
           )}
         >
           {cover ? (
-            <>
-              <Image
-                src={cover}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 640px"
-                className="object-cover"
-              />
-              <div
-                className={cn(
-                  "absolute inset-0 opacity-75 mix-blend-multiply",
-                  accent.bg
-                )}
-                aria-hidden
-              />
-              <div className="absolute inset-0 bg-black/25" aria-hidden />
-            </>
+            <Image
+              src={cover}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 640px"
+              className="object-cover"
+            />
           ) : null}
-          <div className="relative z-10 flex w-full items-end justify-between gap-2">
-            <span className="text-xs font-medium uppercase tracking-[0.14em] text-white/95">
-              {accent.label}
+          {locked ? (
+            <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-[var(--radius-md)] bg-background/85 px-2 py-1 text-[0.65rem] font-medium text-text-primary shadow-xs backdrop-blur-sm">
+              <Lock className="size-3" />
+              Закрыт
             </span>
-            {locked ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 text-[0.65rem] text-white/95">
-                <Lock className="size-3" />
-                Закрыт
-              </span>
-            ) : null}
-          </div>
+          ) : null}
         </div>
-        <div className="space-y-3 p-5 sm:p-6">
-          <div className="flex flex-wrap items-center gap-2">
-            <CourseDifficultyBadge difficulty={course.level} />
-            <span className="text-caption">
-              {formatLessonCount(course.lessonCount)} ·{" "}
-              {formatMinutes(course.estimatedMinutes)}
+
+        <div className="space-y-3 border-t border-border p-5 sm:p-6">
+          <div className="flex items-start gap-3">
+            <span
+              className={cn(
+                "flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-lg)] font-display text-lg tracking-tight",
+                accent.bg,
+                accent.fg
+              )}
+              aria-hidden
+            >
+              {accent.step || "·"}
             </span>
+            <div className="min-w-0 flex-1 space-y-1">
+              <p className="text-label text-text-tertiary">{accent.label}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <CourseDifficultyBadge difficulty={course.level} />
+                <span className="text-caption">
+                  {formatLessonCount(course.lessonCount)} ·{" "}
+                  {formatMinutes(course.estimatedMinutes)}
+                </span>
+              </div>
+            </div>
           </div>
+
           <div className="space-y-2">
             <h2 className="text-title">{course.title}</h2>
             <p className="text-caption line-clamp-2 leading-relaxed">

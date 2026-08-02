@@ -62,7 +62,7 @@ export function CourseDetails({
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/course.jpg"
-        intensity="reading"
+        intensity="catalog"
       />
       <ScreenContainer className="relative z-10 space-y-8 pb-10">
         <FadeIn>

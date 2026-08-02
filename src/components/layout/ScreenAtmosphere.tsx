@@ -1,9 +1,18 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
+export type AtmosphereIntensity =
+  | "hero"
+  | "catalog"
+  | "progress"
+  | "soft"
+  | "default"
+  | "strong"
+  | "reading";
+
 /**
- * Full-bleed atmospheric photo behind a screen — same pattern as the marketing hero.
- * Soft wash keeps type readable without floating overlays.
+ * Full-bleed atmospheric photo behind a screen.
+ * Hero keeps the photo vivid (no paper wash) — readability comes from the content card.
  */
 export function ScreenAtmosphere({
   src,
@@ -14,26 +23,61 @@ export function ScreenAtmosphere({
   src: string;
   priority?: boolean;
   className?: string;
-  /** How strong the readable wash is */
-  intensity?: "soft" | "default" | "strong" | "reading";
+  intensity?: AtmosphereIntensity;
 }) {
+  // Hero: full-viewport photo, no paper wash. Card provides readability.
+  if (intensity === "hero") {
+    return (
+      <div
+        className={cn(
+          "pointer-events-none fixed inset-0 z-0 overflow-hidden",
+          className
+        )}
+        aria-hidden
+      >
+        <Image
+          src={src}
+          alt=""
+          fill
+          priority={priority}
+          sizes="100vw"
+          className="object-cover object-[center_40%]"
+        />
+        {/* Dark vignette only — never bleach with background/paper */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/12 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/15" />
+      </div>
+    );
+  }
+
   const wash =
     intensity === "soft"
-      ? "bg-background/45 sm:bg-background/35"
-      : intensity === "reading"
-        ? "bg-background/82 sm:bg-background/78"
-        : intensity === "strong"
-          ? "bg-background/75 sm:bg-background/68"
-          : "bg-background/60 sm:bg-background/50";
+      ? "bg-primary/18 dark:bg-background/42"
+      : intensity === "catalog"
+        ? "bg-background/48 sm:bg-background/38 dark:bg-background/62 dark:sm:bg-background/52"
+        : intensity === "progress"
+          ? "bg-background/88 sm:bg-background/84"
+          : intensity === "reading"
+            ? "bg-background/86 sm:bg-background/80"
+            : intensity === "strong"
+              ? "bg-background/75 sm:bg-background/68"
+              : "bg-background/45 sm:bg-background/35 dark:bg-background/58 dark:sm:bg-background/48";
 
   const sideWash =
     intensity === "soft"
-      ? "bg-background/55 sm:bg-background/40"
-      : intensity === "reading"
-        ? "bg-background/90 sm:bg-background/85"
-        : intensity === "strong"
-          ? "bg-background/82 sm:bg-background/75"
-          : "bg-background/70 sm:bg-background/55";
+      ? "bg-gradient-to-r from-background/90 via-background/55 to-transparent dark:from-background/75 dark:via-background/40 dark:to-transparent"
+      : intensity === "catalog"
+        ? "bg-background/68 sm:bg-background/48 dark:bg-background/72 dark:sm:bg-background/55"
+        : intensity === "progress"
+          ? "bg-background/94 sm:bg-background/90"
+          : intensity === "reading"
+            ? "bg-background/92 sm:bg-background/86"
+            : intensity === "strong"
+              ? "bg-background/82 sm:bg-background/75"
+              : "bg-background/60 sm:bg-background/42 dark:bg-background/68 dark:sm:bg-background/52";
+
+  const showSideWash = intensity !== "progress";
+  const useMask = intensity !== "soft" && intensity !== "catalog";
 
   return (
     <div
@@ -52,14 +96,25 @@ export function ScreenAtmosphere({
         className="object-cover object-[center_35%]"
       />
       <div className={cn("absolute inset-0", wash)} />
-      <div
-        className={cn("absolute inset-y-0 left-0 w-full max-w-4xl", sideWash)}
-        style={{
-          maskImage: "linear-gradient(to right, black 35%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, black 35%, transparent 100%)",
-        }}
-      />
+      {showSideWash ? (
+        <div
+          className={cn(
+            "absolute inset-y-0 left-0 w-full",
+            intensity === "soft" ? "max-w-xl sm:max-w-2xl" : "max-w-4xl",
+            sideWash
+          )}
+          style={
+            useMask
+              ? {
+                  maskImage:
+                    "linear-gradient(to right, black 35%, transparent 100%)",
+                  WebkitMaskImage:
+                    "linear-gradient(to right, black 35%, transparent 100%)",
+                }
+              : undefined
+          }
+        />
+      ) : null}
     </div>
   );
 }

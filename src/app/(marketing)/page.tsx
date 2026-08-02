@@ -10,40 +10,51 @@ export default function HomePage() {
       <ScreenAtmosphere
         src="/images/hero-landing.jpg"
         priority
-        intensity="soft"
+        intensity="hero"
       />
 
       <main className="relative z-10 mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl flex-col justify-center px-6 pb-24 pt-8">
-        <div className="max-w-2xl space-y-8">
+        <div className="relative max-w-md space-y-5 rounded-[var(--radius-xl)] border border-border/55 bg-surface/48 p-5 shadow-md backdrop-blur-md sm:max-w-lg sm:space-y-6 sm:p-6 dark:bg-surface/43">
           <FadeIn>
-            <h1 className="font-display text-5xl leading-[1.05] tracking-tight text-text-primary md:text-7xl md:leading-[1.02]">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+              Learning path · 01
+            </p>
+          </FadeIn>
+
+          <FadeIn delay={0.04}>
+            <h1 className="font-display text-4xl leading-[1.08] tracking-tight text-text-primary sm:text-5xl sm:leading-[1.05]">
               Investment Academy
             </h1>
           </FadeIn>
 
-          <SlideUp delay={0.08}>
-            <p className="max-w-lg font-display text-2xl leading-snug tracking-tight text-text-primary md:text-3xl">
+          <SlideUp delay={0.1}>
+            <p className="max-w-sm font-display text-xl leading-snug tracking-tight text-text-primary sm:text-2xl">
               Учитесь инвестировать спокойно — без шума и обещаний лёгкой
               прибыли.
             </p>
           </SlideUp>
 
           <FadeIn delay={0.16}>
-            <p className="max-w-md text-lg text-text-secondary">
+            <p className="max-w-sm text-base font-medium text-text-primary/85">
               Короткие курсы о рынках, риске и долгом горизонте — онлайн и
               офлайн.
             </p>
           </FadeIn>
 
           <SlideUp delay={0.22}>
-            <div className="flex flex-wrap gap-3">
-              <Button size="lg" asChild>
+            <div className="flex flex-wrap gap-2.5">
+              <Button size="default" variant="accent" asChild>
                 <Link href="/dashboard" prefetch>
                   Начать обучение
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button
+                size="default"
+                variant="outline"
+                className="border-border/80 bg-surface/80 backdrop-blur-sm"
+                asChild
+              >
                 <Link href="/courses" prefetch>
                   Смотреть курсы
                 </Link>

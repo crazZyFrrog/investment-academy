@@ -66,7 +66,7 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/courses.jpg"
-        intensity="reading"
+        intensity="catalog"
       />
       <ScreenContainer className="relative z-10 space-y-8">
         <FadeIn className="space-y-4">
@@ -74,6 +74,7 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
             <Link href="/">← На главную</Link>
           </Button>
           <ReadablePanel className="space-y-3">
+            <p className="text-label text-primary">Каталог · путь обучения</p>
             <h1 className="text-heading-1">Курсы</h1>
             <p className="max-w-xl text-body text-text-secondary">
               Курсы открываются по порядку: завершите уроки и тесты текущего

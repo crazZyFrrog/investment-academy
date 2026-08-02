@@ -131,7 +131,7 @@ function DailyHabitCardInner({
               </span>
             </div>
             <div
-              className="flex items-center gap-1.5 rounded-[var(--radius-lg)] bg-primary/10 px-3 py-2 text-primary"
+              className="flex items-center gap-1.5 rounded-[var(--radius-lg)] bg-accent/15 px-3 py-2 text-accent"
               title="Опыт"
             >
               <Zap className="size-4" aria-hidden />

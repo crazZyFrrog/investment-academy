@@ -22,11 +22,12 @@ export function ProgressPageClient({
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/progress.jpg"
-        intensity="reading"
+        intensity="progress"
       />
       <ScreenContainer className="relative z-10 pb-8">
         <FadeIn className="space-y-8">
           <ReadablePanel className="space-y-2 pt-0">
+            <p className="text-label text-primary">Журнал движения</p>
             <h1 className="font-display text-3xl tracking-tight text-text-primary">
               Прогресс
             </h1>

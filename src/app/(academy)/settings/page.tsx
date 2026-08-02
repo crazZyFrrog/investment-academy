@@ -59,7 +59,7 @@ export default function SettingsPage() {
     <div className="relative min-h-full">
       <ScreenAtmosphere
         src="/images/screens/settings.jpg"
-        intensity="reading"
+        intensity="progress"
       />
       <ScreenContainer className="relative z-10 space-y-8 pb-10 pt-2">
         <FadeIn className="space-y-8">

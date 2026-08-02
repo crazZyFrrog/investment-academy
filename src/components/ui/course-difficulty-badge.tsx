@@ -10,7 +10,7 @@ const difficultyConfig: Record<
   { label: string; variant: NonNullable<BadgeProps["variant"]> }
 > = {
   beginner: { label: levelLabels.beginner, variant: "success" },
-  intermediate: { label: levelLabels.intermediate, variant: "warning" },
+  intermediate: { label: levelLabels.intermediate, variant: "soft" },
   advanced: { label: levelLabels.advanced, variant: "accent" },
 };
 

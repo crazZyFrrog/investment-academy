@@ -2,35 +2,35 @@
 
 /* =============================================================================
    Design tokens — Investment Academy
-   Premium educational product. Semantic roles only. Flat surfaces. No gradients.
-   Inspiration (not copies): Apple HIG, Linear, Raycast, Notion, Arc.
+   Editorial finance: warm paper, deep teal primary, amber accent.
+   Semantic roles only. Flat surfaces. No decorative gradients.
    ============================================================================= */
 
 :root {
-  /* --- Color: Light (desaturated, calm) --- */
-  --background: #f6f6f4;
-  --surface: #ffffff;
-  --surface-secondary: #efefec;
-  --primary: #3d5c52;
-  --primary-foreground: #f7faf8;
-  --secondary: #ebebe8;
-  --secondary-foreground: #2a2a27;
-  --accent: #4d5c66;
-  --accent-foreground: #f5f7f8;
-  --success: #3f6b54;
+  /* --- Color: Light (warm paper + deep teal + amber) --- */
+  --background: #f4f0e8;
+  --surface: #fffdf8;
+  --surface-secondary: #e8e3d8;
+  --primary: #173f4a;
+  --primary-foreground: #f4faf8;
+  --secondary: #ebe6dc;
+  --secondary-foreground: #17252a;
+  --accent: #c88745;
+  --accent-foreground: #fffaf3;
+  --success: #4c765c;
   --success-foreground: #f5faf7;
-  --warning: #8a6a35;
-  --warning-foreground: #fbf8f2;
+  --warning: #c88745;
+  --warning-foreground: #fffaf3;
   --error: #8f3f3a;
   --error-foreground: #fdf6f5;
-  --text-primary: #1a1a18;
-  --text-secondary: #6b6b66;
-  --text-tertiary: #8f8f88;
-  --border: #e4e4df;
-  --muted: #efefec;
-  --muted-foreground: #6b6b66;
-  --ring: #3d5c52;
-  --input: #e4e4df;
+  --text-primary: #17252a;
+  --text-secondary: #667276;
+  --text-tertiary: #8a9598;
+  --border: #d9d3c7;
+  --muted: #ebe6dc;
+  --muted-foreground: #667276;
+  --ring: #173f4a;
+  --input: #d9d3c7;
 
   /* shadcn / legacy aliases */
   --foreground: var(--text-primary);
@@ -73,11 +73,11 @@
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
 
-  /* --- Shadows (soft, low contrast) --- */
-  --shadow-xs: 0 1px 2px rgba(26, 26, 24, 0.04);
-  --shadow-sm: 0 2px 8px rgba(26, 26, 24, 0.04), 0 1px 2px rgba(26, 26, 24, 0.03);
-  --shadow-md: 0 4px 16px rgba(26, 26, 24, 0.06), 0 1px 3px rgba(26, 26, 24, 0.04);
-  --shadow-lg: 0 8px 28px rgba(26, 26, 24, 0.08), 0 2px 6px rgba(26, 26, 24, 0.04);
+  /* --- Shadows (soft, warm-tinted) --- */
+  --shadow-xs: 0 1px 2px rgba(23, 37, 42, 0.04);
+  --shadow-sm: 0 2px 8px rgba(23, 37, 42, 0.05), 0 1px 2px rgba(23, 37, 42, 0.03);
+  --shadow-md: 0 4px 16px rgba(23, 37, 42, 0.07), 0 1px 3px rgba(23, 37, 42, 0.04);
+  --shadow-lg: 0 8px 28px rgba(23, 37, 42, 0.09), 0 2px 6px rgba(23, 37, 42, 0.04);
   --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ring) 28%, transparent);
 
   /* --- Typography --- */
@@ -130,29 +130,29 @@
 }
 
 .dark {
-  --background: #111111;
-  --surface: #1a1a1a;
-  --surface-secondary: #222222;
-  --primary: #8aaba0;
-  --primary-foreground: #0f1613;
-  --secondary: #222222;
-  --secondary-foreground: #e8e8e4;
-  --accent: #8a96a0;
-  --accent-foreground: #101214;
+  --background: #101b20;
+  --surface: #17272d;
+  --surface-secondary: #20363c;
+  --primary: #a6c7bc;
+  --primary-foreground: #0f1a1c;
+  --secondary: #20363c;
+  --secondary-foreground: #f4f0e8;
+  --accent: #d9a064;
+  --accent-foreground: #1a1208;
   --success: #7a9e88;
   --success-foreground: #0f1612;
-  --warning: #b89a6a;
-  --warning-foreground: #161208;
+  --warning: #d9a064;
+  --warning-foreground: #1a1208;
   --error: #c07a74;
   --error-foreground: #180c0b;
-  --text-primary: #f0f0ec;
-  --text-secondary: #9a9a94;
-  --text-tertiary: #6e6e68;
-  --border: #2c2c2c;
-  --muted: #222222;
-  --muted-foreground: #9a9a94;
-  --ring: #8aaba0;
-  --input: #2c2c2c;
+  --text-primary: #f4f0e8;
+  --text-secondary: #aab7b5;
+  --text-tertiary: #7d8c8a;
+  --border: #30474c;
+  --muted: #20363c;
+  --muted-foreground: #aab7b5;
+  --ring: #a6c7bc;
+  --input: #30474c;
 
   --foreground: var(--text-primary);
   --card: var(--surface);
@@ -160,37 +160,37 @@
   --destructive: var(--error);
   --destructive-foreground: var(--error-foreground);
 
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.32), 0 1px 3px rgba(0, 0, 0, 0.22);
-  --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.22);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.34), 0 1px 3px rgba(0, 0, 0, 0.24);
+  --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.42), 0 2px 6px rgba(0, 0, 0, 0.26);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: #111111;
-    --surface: #1a1a1a;
-    --surface-secondary: #222222;
-    --primary: #8aaba0;
-    --primary-foreground: #0f1613;
-    --secondary: #222222;
-    --secondary-foreground: #e8e8e4;
-    --accent: #8a96a0;
-    --accent-foreground: #101214;
+    --background: #101b20;
+    --surface: #17272d;
+    --surface-secondary: #20363c;
+    --primary: #a6c7bc;
+    --primary-foreground: #0f1a1c;
+    --secondary: #20363c;
+    --secondary-foreground: #f4f0e8;
+    --accent: #d9a064;
+    --accent-foreground: #1a1208;
     --success: #7a9e88;
     --success-foreground: #0f1612;
-    --warning: #b89a6a;
-    --warning-foreground: #161208;
+    --warning: #d9a064;
+    --warning-foreground: #1a1208;
     --error: #c07a74;
     --error-foreground: #180c0b;
-    --text-primary: #f0f0ec;
-    --text-secondary: #9a9a94;
-    --text-tertiary: #6e6e68;
-    --border: #2c2c2c;
-    --muted: #222222;
-    --muted-foreground: #9a9a94;
-    --ring: #8aaba0;
-    --input: #2c2c2c;
+    --text-primary: #f4f0e8;
+    --text-secondary: #aab7b5;
+    --text-tertiary: #7d8c8a;
+    --border: #30474c;
+    --muted: #20363c;
+    --muted-foreground: #aab7b5;
+    --ring: #a6c7bc;
+    --input: #30474c;
 
     --foreground: var(--text-primary);
     --card: var(--surface);
@@ -198,10 +198,10 @@
     --destructive: var(--error);
     --destructive-foreground: var(--error-foreground);
 
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.32), 0 1px 3px rgba(0, 0, 0, 0.22);
-    --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.25);
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.22);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.34), 0 1px 3px rgba(0, 0, 0, 0.24);
+    --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.42), 0 2px 6px rgba(0, 0, 0, 0.26);
   }
 }
 
@@ -291,9 +291,20 @@ body {
   font-family: var(--font-display), serif;
 }
 
-/* Flat marketing surface — no gradients, no glass */
+/* Flat marketing surface — paper field */
 .hero-surface {
   background: var(--background);
+}
+
+/* Editorial route marks on photo backgrounds */
+.editorial-route {
+  color: color-mix(in srgb, var(--surface) 88%, var(--primary));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+.dark .editorial-route {
+  color: color-mix(in srgb, var(--primary) 80%, white);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
 
 .prose h1,

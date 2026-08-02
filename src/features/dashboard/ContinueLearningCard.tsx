@@ -73,11 +73,16 @@ function ContinueLearningCardInner({
         !ready && "opacity-70"
       )}
     >
-      <div className={cn("px-5 py-4 sm:px-6", accent.bg)}>
-        <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/95">
-          {hasStarted ? "Продолжить" : "Начать обучение"}
-        </p>
-        <h2 className="mt-2 font-display text-2xl tracking-tight text-white sm:text-[1.75rem]">
+      <div className="bg-primary px-5 py-4 sm:px-6">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary-foreground/90">
+            {hasStarted ? "Продолжить" : "Начать обучение"}
+          </p>
+          <span className="rounded-[var(--radius-md)] bg-accent px-2 py-0.5 text-[0.65rem] font-medium text-accent-foreground">
+            {accent.label}
+          </span>
+        </div>
+        <h2 className="mt-2 font-display text-2xl tracking-tight text-primary-foreground sm:text-[1.75rem]">
           {course.title}
         </h2>
       </div>

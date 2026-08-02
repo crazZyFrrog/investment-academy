@@ -38,56 +38,96 @@ export function formatMinutes(minutes: number): string {
   return `${hours} ч ${rest} мин`;
 }
 
-/** Solid accent tones for course cards — no gradients */
-export const courseAccents: Record<
+/** Level-driven editorial accents: sage → slate → amber */
+const levelAccentTokens = {
+  beginner: {
+    bg: "bg-[#2A5C58]",
+    fg: "text-[#f4faf8]",
+    hex: "#2A5C58",
+  },
+  intermediate: {
+    bg: "bg-[#3D5A66]",
+    fg: "text-[#f4f8f9]",
+    hex: "#3D5A66",
+  },
+  advanced: {
+    bg: "bg-[#C88745]",
+    fg: "text-[#fffaf3]",
+    hex: "#C88745",
+  },
+} as const;
+
+const courseMeta: Record<
   string,
-  { bg: string; fg: string; label: string }
+  { step: number; short: string; level: CourseLevelKey }
 > = {
   "investing-fundamentals": {
-    bg: "bg-[#3d5c52]",
-    fg: "text-[#f7faf8]",
-    label: "Шаг 1 · Основы",
+    step: 1,
+    short: "Основы",
+    level: "beginner",
   },
   "stocks-and-bonds": {
-    bg: "bg-[#5c5346]",
-    fg: "text-[#faf8f5]",
-    label: "Шаг 2 · Инструменты",
+    step: 2,
+    short: "Инструменты",
+    level: "beginner",
   },
   "portfolio-basics": {
-    bg: "bg-[#4d5c66]",
-    fg: "text-[#f5f7f8]",
-    label: "Шаг 3 · Портфель",
+    step: 3,
+    short: "Портфель",
+    level: "intermediate",
   },
   "russia-practice": {
-    bg: "bg-[#4a5560]",
-    fg: "text-[#f4f6f7]",
-    label: "Шаг 4 · Практика",
+    step: 4,
+    short: "Практика",
+    level: "beginner",
   },
   "advanced-behavior": {
-    bg: "bg-[#5a4f46]",
-    fg: "text-[#faf7f4]",
-    label: "Шаг 5 · Поведение",
+    step: 5,
+    short: "Поведение",
+    level: "advanced",
   },
   "advanced-portfolio": {
-    bg: "bg-[#45565c]",
-    fg: "text-[#f4f8f9]",
-    label: "Шаг 6 · Портфель+",
+    step: 6,
+    short: "Портфель+",
+    level: "advanced",
   },
   "advanced-products": {
-    bg: "bg-[#56484a]",
-    fg: "text-[#faf5f5]",
-    label: "Шаг 7 · Продукты",
+    step: 7,
+    short: "Продукты",
+    level: "advanced",
   },
 };
 
-export function getCourseAccent(slug: string) {
-  return (
-    courseAccents[slug] ?? {
+export type CourseAccent = {
+  bg: string;
+  fg: string;
+  label: string;
+  step: number;
+  short: string;
+  hex: string;
+};
+
+export function getCourseAccent(slug: string): CourseAccent {
+  const meta = courseMeta[slug];
+  if (!meta) {
+    return {
       bg: "bg-primary",
       fg: "text-primary-foreground",
       label: "Курс",
-    }
-  );
+      step: 0,
+      short: "Курс",
+      hex: "#173f4a",
+    };
+  }
+  const tokens = levelAccentTokens[meta.level];
+  return {
+    bg: tokens.bg,
+    fg: tokens.fg,
+    label: `Шаг ${meta.step} · ${meta.short}`,
+    step: meta.step,
+    short: meta.short,
+    hex: tokens.hex,
+  };
 }
 
 /** Local cover images for course cards (optional) */
@@ -105,20 +145,23 @@ export function getCourseCover(slug: string): string | undefined {
   return courseCovers[slug];
 }
 
-/** Hex accents for SVG charts (match courseAccents backgrounds) */
-export const courseAccentHex: Record<string, string> = {
-  "investing-fundamentals": "#3d5c52",
-  "stocks-and-bonds": "#5c5346",
-  "portfolio-basics": "#4d5c66",
-  "russia-practice": "#4a5560",
-  "advanced-behavior": "#5a4f46",
-  "advanced-portfolio": "#45565c",
-  "advanced-products": "#56484a",
-};
-
+/** Hex accents for SVG charts */
 export function getCourseAccentHex(slug: string): string {
-  return courseAccentHex[slug] ?? "#3d5c52";
+  return getCourseAccent(slug).hex;
 }
+
+/** @deprecated use getCourseAccent / getCourseAccentHex */
+export const courseAccents = Object.fromEntries(
+  Object.keys(courseMeta).map((slug) => {
+    const accent = getCourseAccent(slug);
+    return [slug, { bg: accent.bg, fg: accent.fg, label: accent.label }];
+  })
+) as Record<string, { bg: string; fg: string; label: string }>;
+
+/** @deprecated use getCourseAccentHex */
+export const courseAccentHex = Object.fromEntries(
+  Object.keys(courseMeta).map((slug) => [slug, getCourseAccent(slug).hex])
+) as Record<string, string>;
 
 export function sortByLearningPath<T extends { slug: string; order: number }>(
   courses: T[]

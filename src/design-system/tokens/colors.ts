@@ -1,6 +1,6 @@
 /**
  * Semantic color roles — never hardcode hex in components.
- * Palette is intentionally desaturated: calm, premium, educational.
+ * Palette: warm paper, deep teal primary, amber accent — editorial finance.
  */
 export const semanticColors = [
   "background",

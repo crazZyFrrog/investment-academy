@@ -13,6 +13,7 @@ import { DashboardPathProgress } from "@/features/dashboard/DashboardPathProgres
 import { DashboardCourseList } from "@/features/dashboard/DashboardCourseList";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
 import { ReadablePanel } from "@/components/layout/ReadablePanel";
+import { EditorialPathMark } from "@/components/layout/EditorialPathMark";
 
 export default async function DashboardPage() {
   const courses = sortByLearningPath(await getCourses());
@@ -30,17 +31,18 @@ export default async function DashboardPage() {
       <ScreenAtmosphere
         src="/images/screens/dashboard.jpg"
         priority
-        intensity="reading"
+        intensity="catalog"
       />
       <ScreenContainer className="relative z-10 space-y-10 pb-8">
         <FadeIn className="pt-2">
-          <ReadablePanel className="space-y-2">
-            <p className="text-label">Investment Academy</p>
+          <ReadablePanel className="space-y-3">
+            <p className="text-label text-primary">Investment Academy</p>
             <h1 className="text-heading-1">Учитесь инвестировать спокойно</h1>
             <p className="max-w-lg text-body text-text-secondary">
               Курсы открываются по шагам. Завершите уроки и тесты текущего
               курса — следующий станет доступен.
             </p>
+            <EditorialPathMark variant="section" className="pt-1" />
           </ReadablePanel>
         </FadeIn>
 
@@ -72,7 +74,7 @@ export default async function DashboardPage() {
           </div>
 
           <FadeIn delay={0.04}>
-            <div className="relative h-36 overflow-hidden rounded-[var(--radius-xl)] sm:h-44">
+            <div className="relative h-36 overflow-hidden rounded-[var(--radius-xl)] border border-border sm:h-44">
               <Image
                 src="/images/dashboard-path.jpg"
                 alt=""
@@ -80,7 +82,11 @@ export default async function DashboardPage() {
                 sizes="(max-width: 768px) 100vw, 720px"
                 className="object-cover object-center"
               />
-              <div className="absolute inset-0 bg-background/25" aria-hidden />
+              <div
+                className="absolute inset-0 bg-primary/20 mix-blend-multiply"
+                aria-hidden
+              />
+              <div className="absolute inset-0 bg-background/15" aria-hidden />
             </div>
           </FadeIn>
 
