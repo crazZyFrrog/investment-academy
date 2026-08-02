@@ -1,0 +1,182 @@
+[
+  {
+    "id": "investirovanie",
+    "term": "Инвестирование",
+    "definition": "Вложение денег с целью сохранить или приумножить покупательную способность на горизонте цели, принимая риск убытка.",
+    "relatedCourseSlugs": ["investing-fundamentals", "first-100k"]
+  },
+  {
+    "id": "inflyaciya",
+    "term": "Инфляция",
+    "definition": "Рост общего уровня цен, из‑за которого на ту же сумму со временем можно купить меньше товаров и услуг.",
+    "relatedCourseSlugs": ["investing-fundamentals"]
+  },
+  {
+    "id": "gorizont",
+    "term": "Горизонт",
+    "definition": "Срок, через который деньги с высокой вероятностью понадобятся. Горизонт определяет допустимый уровень риска.",
+    "relatedCourseSlugs": ["investing-fundamentals", "first-100k"]
+  },
+  {
+    "id": "risk",
+    "term": "Риск",
+    "definition": "Возможность получить результат хуже ожидаемого, включая просадку цены и потерю капитала.",
+    "relatedCourseSlugs": ["investing-fundamentals", "crypto-without-illusions"]
+  },
+  {
+    "id": "dohodnost",
+    "term": "Доходность",
+    "definition": "Мера результата вложений за период. Часто показывают до налогов и комиссий — итог «на руки» может быть ниже.",
+    "relatedCourseSlugs": ["investing-fundamentals", "dividends"]
+  },
+  {
+    "id": "slozhnyi-procent",
+    "term": "Сложный процент",
+    "definition": "Эффект, когда результат прошлых периодов сам начинает участвовать в дальнейшем результате при реинвестировании.",
+    "relatedCourseSlugs": ["investing-fundamentals"]
+  },
+  {
+    "id": "akciya",
+    "term": "Акция",
+    "definition": "Доля в компании. Результат может складываться из изменения цены и дивидендов, без гарантии прибыли.",
+    "relatedCourseSlugs": ["stocks-and-bonds", "dividends"]
+  },
+  {
+    "id": "obligaciya",
+    "term": "Облигация",
+    "definition": "Долговая бумага: вы одалживаете деньги эмитенту на условиях, где важны ставка, срок и риск невыплаты.",
+    "relatedCourseSlugs": ["stocks-and-bonds"]
+  },
+  {
+    "id": "fond",
+    "term": "Фонд",
+    "definition": "Упаковка множества активов под общими правилами. Важно смотреть состав, комиссии и условия, а не только название.",
+    "relatedCourseSlugs": ["stocks-and-bonds"]
+  },
+  {
+    "id": "komissii",
+    "term": "Комиссии и издержки",
+    "definition": "Плата за управление, сделки и обслуживание. На длинной дистанции даже небольшой процент заметно влияет на итог.",
+    "relatedCourseSlugs": ["stocks-and-bonds"]
+  },
+  {
+    "id": "dividend",
+    "term": "Дивиденд",
+    "definition": "Выплата акционерам части средств компании по её решению. Не гарантия и не «аренда» рынка.",
+    "relatedCourseSlugs": ["dividends", "stocks-and-bonds"]
+  },
+  {
+    "id": "dividendnaya-dohodnost",
+    "term": "Дивидендная доходность",
+    "definition": "Отношение выплаты к цене акции. Высокий процент иногда отражает падение цены или разовую выплату, а не устойчивость.",
+    "relatedCourseSlugs": ["dividends"]
+  },
+  {
+    "id": "portfel",
+    "term": "Портфель",
+    "definition": "Набор вложений с разными ролями под вашу цель, горизонт и правила риска.",
+    "relatedCourseSlugs": ["portfolio-basics"]
+  },
+  {
+    "id": "diversifikaciya",
+    "term": "Диверсификация",
+    "definition": "Распределение денег между разными источниками риска, чтобы одна ошибка реже ломала весь план.",
+    "relatedCourseSlugs": ["portfolio-basics"]
+  },
+  {
+    "id": "raspredelenie-aktivov",
+    "term": "Распределение активов",
+    "definition": "Выбор долей между классами вложений (например, акции и облигации) под цель и спокойствие.",
+    "relatedCourseSlugs": ["portfolio-basics"]
+  },
+  {
+    "id": "rebalansirovka",
+    "term": "Ребалансировка",
+    "definition": "Возврат долей портфеля к целевым правилам после того, как рынок их сдвинул.",
+    "relatedCourseSlugs": ["portfolio-basics"]
+  },
+  {
+    "id": "prosadka",
+    "term": "Просадка",
+    "definition": "Снижение стоимости вложений от предыдущего пика. Нормальная часть рыночного пути при длинном горизонте.",
+    "relatedCourseSlugs": ["advanced-behavior", "investing-fundamentals"]
+  },
+  {
+    "id": "podushka",
+    "term": "Финансовая подушка",
+    "definition": "Резерв на жизнь и сюрпризы, который должен быть доступен и не зависеть от сильных колебаний рынка.",
+    "relatedCourseSlugs": ["first-100k", "russia-practice"]
+  },
+  {
+    "id": "brokerskiy-schet",
+    "term": "Брокерский счёт",
+    "definition": "Счёт для учёта и сделок с ценными бумагами через посредника. Перед открытием важно понимать тарифы и условия.",
+    "relatedCourseSlugs": ["russia-practice"]
+  },
+  {
+    "id": "iis",
+    "term": "ИИС",
+    "definition": "Индивидуальный инвестиционный счёт со специальными налоговыми условиями и ограничениями. Правила нужно проверять по актуальным нормам.",
+    "relatedCourseSlugs": ["russia-practice"]
+  },
+  {
+    "id": "fomo",
+    "term": "FOMO",
+    "definition": "Страх упустить возможность. Подталкивает к срочным решениям без цели, горизонта и проверки риска.",
+    "relatedCourseSlugs": ["russia-practice", "crypto-without-illusions"]
+  },
+  {
+    "id": "volatilnost",
+    "term": "Волатильность",
+    "definition": "Мера того, насколько сильно и быстро колеблется цена. Высокая волатильность означает более резкие движения вверх и вниз.",
+    "relatedCourseSlugs": ["crypto-without-illusions", "investing-fundamentals"]
+  },
+  {
+    "id": "kryptoaktiv",
+    "term": "Криптоактив",
+    "definition": "Цифровой актив с собственными правилами передачи и учёта. Часто сопровождается высокой волатильностью и операционными рисками.",
+    "relatedCourseSlugs": ["crypto-without-illusions"]
+  },
+  {
+    "id": "plecho",
+    "term": "Плечо",
+    "definition": "Использование заёмных средств или встроенного мультипликатора, которое усиливает и прибыль, и убыток.",
+    "relatedCourseSlugs": ["advanced-products", "crypto-without-illusions"]
+  },
+  {
+    "id": "strukturirovannyj-produkt",
+    "term": "Сложный / структурированный продукт",
+    "definition": "Конструкция с неочевидными условиями выплаты. Перед покупкой важно понять, где спрятана плата за обещание.",
+    "relatedCourseSlugs": ["advanced-products"]
+  },
+  {
+    "id": "valyutnyy-risk",
+    "term": "Валютный риск",
+    "definition": "Влияние изменения курсов валют на результат вложений, номинированных в другой валюте.",
+    "relatedCourseSlugs": ["advanced-portfolio"]
+  },
+  {
+    "id": "reinvestirovanie",
+    "term": "Реинвестирование",
+    "definition": "Повторное вложение полученных выплат (например, дивидендов) согласно плану роста капитала.",
+    "relatedCourseSlugs": ["dividends", "investing-fundamentals"]
+  },
+  {
+    "id": "diversifikaciya-lozhnaya",
+    "term": "Ложная диверсификация",
+    "definition": "Много позиций, которые зависят от одного и того же фактора риска (сектор, страна, идея).",
+    "relatedCourseSlugs": ["portfolio-basics"]
+  },
+  {
+    "id": "tezis",
+    "term": "Инвестиционный тезис",
+    "definition": "Краткое обоснование, зачем позиция в портфеле и при каких условиях тезис перестаёт быть верным.",
+    "relatedCourseSlugs": ["advanced-behavior", "dividends"]
+  },
+  {
+    "id": "stop-list",
+    "term": "Стоп-лист",
+    "definition": "Заранее записанные ситуации, в которых вы отказываетесь от сделки или идеи.",
+    "relatedCourseSlugs": ["russia-practice", "crypto-without-illusions"]
+  }
+]

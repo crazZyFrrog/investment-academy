@@ -417,3 +417,22 @@ body {
     font-size: var(--font-size-2xl);
   }
 }
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  aside,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  #path-certificate {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}

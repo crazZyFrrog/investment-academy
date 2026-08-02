@@ -1,0 +1,16 @@
+{
+  "id": "crypto-without-illusions",
+  "title": "Крипто без иллюзий",
+  "description": "Спокойный разбор: что такое криптоактив, почему волатильность опасна, где крипто не заменяет портфель и когда лучше сказать «нет».",
+  "level": "intermediate",
+  "order": 103,
+  "tags": ["крипто", "риск", "продукты", "ошибки"],
+  "estimatedMinutes": 68,
+  "contentVersion": "1.0.0",
+  "lessonOrder": [
+    "chto-takoe-krypto",
+    "volatilnost-i-poterya",
+    "ne-zamena-portfelyu",
+    "pravila-net"
+  ]
+}

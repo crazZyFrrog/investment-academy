@@ -19,6 +19,10 @@ type LessonQuizProps = {
   data: string;
   /** Called once when the learner scores 100% after checking answers */
   onPassed?: (score: number) => void;
+  /** Called when checked answers are not all correct */
+  onFailed?: () => void;
+  /** Review mode: no lesson-complete CTA, different copy */
+  mode?: "lesson" | "review";
 };
 
 export function LessonQuiz({
@@ -26,6 +30,8 @@ export function LessonQuiz({
   title = "Проверьте себя",
   data,
   onPassed,
+  onFailed,
+  mode = "lesson",
 }: LessonQuizProps) {
   const items = useMemo(() => parseLessonQuizData(data), [data]);
   const draft = useQuizDraftStore((state) => state.drafts[id]);
@@ -33,6 +39,7 @@ export function LessonQuiz({
   const setChecked = useQuizDraftStore((state) => state.setChecked);
   const clearQuiz = useQuizDraftStore((state) => state.clearQuiz);
   const notifiedRef = useRef(false);
+  const failedNotifiedRef = useRef(false);
 
   const selected = draft?.selected ?? {};
   const checked = draft?.checked ?? false;
@@ -51,10 +58,17 @@ export function LessonQuiz({
     onPassed?.(100);
   }, [passed, onPassed]);
 
+  useEffect(() => {
+    if (!checked || passed || failedNotifiedRef.current) return;
+    failedNotifiedRef.current = true;
+    onFailed?.();
+  }, [checked, passed, onFailed]);
+
   if (items.length === 0) return null;
 
   function reset() {
     notifiedRef.current = false;
+    failedNotifiedRef.current = false;
     clearQuiz(id);
   }
 
@@ -66,8 +80,13 @@ export function LessonQuiz({
     if (correct === items.length) {
       notifiedRef.current = true;
       onPassed?.(100);
+    } else {
+      failedNotifiedRef.current = true;
+      onFailed?.();
     }
   }
+
+  const isReview = mode === "review";
 
   return (
     <section
@@ -85,8 +104,9 @@ export function LessonQuiz({
           {title}
         </h2>
         <p className="mt-2 text-[1.05rem] leading-relaxed text-text-secondary">
-          Ответьте на все вопросы верно, чтобы отметить урок пройденным. Черновик
-          ответов сохраняется на этом устройстве.
+          {isReview
+            ? "Повторите материал: ответьте на все вопросы верно. Урок уже пройден — это закрепление."
+            : "Ответьте на все вопросы верно, чтобы отметить урок пройденным. Черновик ответов сохраняется на этом устройстве."}
         </p>
       </div>
 
@@ -233,15 +253,18 @@ export function LessonQuiz({
         <aside className="mt-6 rounded-[var(--radius-xl)] border border-success/30 bg-success/[0.07] px-5 py-4 text-[0.95rem] leading-relaxed text-text-primary">
           <p className="font-medium">Отлично</p>
           <p className="mt-1.5 text-text-secondary">
-            Тест пройден. Прокрутите ниже и нажмите «Отметить как прочитанный»,
-            чтобы открыть следующий урок.
+            {isReview
+              ? "Повторение засчитано. Следующее напоминание сдвинется по интервалу."
+              : "Тест пройден. Прокрутите ниже и нажмите «Отметить как прочитанный», чтобы открыть следующий урок."}
           </p>
-          <a
-            href="#lesson-complete"
-            className="mt-3 inline-flex text-sm font-medium text-primary underline-offset-2 hover:underline"
-          >
-            Перейти к завершению урока
-          </a>
+          {!isReview ? (
+            <a
+              href="#lesson-complete"
+              className="mt-3 inline-flex text-sm font-medium text-primary underline-offset-2 hover:underline"
+            >
+              Перейти к завершению урока
+            </a>
+          ) : null}
         </aside>
       ) : null}
     </section>

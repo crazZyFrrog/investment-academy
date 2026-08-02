@@ -11,6 +11,8 @@ const lessonProgressSchema = z.object({
   score: z.number().optional(),
   startedAt: z.string().optional(),
   completedAt: z.string().optional(),
+  lastReviewedAt: z.string().optional(),
+  reviewIntervalDays: z.number().optional(),
   version: z.number(),
 });
 

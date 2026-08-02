@@ -1,0 +1,16 @@
+{
+  "id": "first-100k",
+  "title": "Первые 100 000 ₽",
+  "description": "Практичный план: цель и горизонт, подушка безопасности, регулярные взносы и что делать, когда первая сумма уже собрана.",
+  "level": "beginner",
+  "order": 101,
+  "tags": ["первые-шаги", "план", "основы", "долгосрок"],
+  "estimatedMinutes": 72,
+  "contentVersion": "1.0.0",
+  "lessonOrder": [
+    "cel-i-gorizont",
+    "podushka-vs-investicii",
+    "plan-vznosov",
+    "posle-100k"
+  ]
+}

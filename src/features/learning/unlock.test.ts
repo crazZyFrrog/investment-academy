@@ -123,4 +123,32 @@ describe("course unlock", () => {
     ]);
     expect(getContinueCourseSlug(courses, doneFirst)).toBe("stocks-and-bonds");
   });
+
+  it("locks side courses until path progress and XP thresholds are met", () => {
+    const bySlug = buildCoursesBySlug([
+      ...courses,
+      { id: "first-100k", slug: "first-100k", lessonCount: 4 },
+    ]);
+    expect(isCourseContentUnlocked("first-100k", undefined, bySlug)).toBe(
+      false
+    );
+
+    const doneFirst = {
+      ...snapshotWith("investing-fundamentals", ["completed", "completed"]),
+      gamification: {
+        xp: 100,
+        level: 2,
+        currentStreak: 1,
+        longestStreak: 1,
+        lastActivityDate: "2026-01-01",
+        todayCompletedLessons: 1,
+        todayDate: "2026-01-01",
+        unlockedAchievementIds: [],
+        activityDates: ["2026-01-01"],
+      },
+    };
+    expect(isCourseContentUnlocked("first-100k", doneFirst, bySlug)).toBe(
+      true
+    );
+  });
 });

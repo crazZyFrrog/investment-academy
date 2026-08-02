@@ -9,7 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { FadeIn, SlideUp } from "@/components/motion";
 import { ScreenContainer } from "@/components/ui/screen-container";
-import { levelLabels, type CourseLevelKey } from "@/features/catalog/labels";
+import {
+  isLearningPathCourse,
+  learningPathOrder,
+  levelLabels,
+  type CourseLevelKey,
+} from "@/features/catalog/labels";
 import { useCourseUnlock } from "@/features/learning/use-course-unlock";
 import { ScreenAtmosphere } from "@/components/layout/ScreenAtmosphere";
 import { ReadablePanel } from "@/components/layout/ReadablePanel";
@@ -29,6 +34,45 @@ function matchesQuery(course: CourseSummary, query: string) {
     .join(" ")
     .toLowerCase();
   return haystack.includes(query);
+}
+
+function CourseSection({
+  title,
+  description,
+  courses,
+  isUnlocked,
+  isLoading,
+  startIndex = 0,
+}: {
+  title: string;
+  description: string;
+  courses: CourseSummary[];
+  isUnlocked: (slug: string) => boolean;
+  isLoading: boolean;
+  startIndex?: number;
+}) {
+  if (courses.length === 0) return null;
+
+  return (
+    <section className="space-y-4">
+      <div className="space-y-1">
+        <h2 className="font-display text-xl tracking-tight text-text-primary">
+          {title}
+        </h2>
+        <p className="max-w-xl text-sm text-text-secondary">{description}</p>
+      </div>
+      <div className="grid gap-4 sm:gap-5">
+        {courses.map((course, index) => (
+          <SlideUp key={course.id} delay={(startIndex + index) * 0.04}>
+            <CourseCard
+              course={course}
+              locked={!isLoading && !isUnlocked(course.slug)}
+            />
+          </SlideUp>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
@@ -59,6 +103,19 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
     });
   }, [courses, levelFilter, tagFilter, normalizedQuery]);
 
+  const pathCourses = useMemo(() => {
+    const bySlug = new Map(visible.map((course) => [course.slug, course]));
+    return learningPathOrder
+      .map((slug) => bySlug.get(slug))
+      .filter((course): course is CourseSummary => Boolean(course));
+  }, [visible]);
+
+  const sideCourses = useMemo(() => {
+    return visible
+      .filter((course) => !isLearningPathCourse(course.slug))
+      .sort((a, b) => a.order - b.order);
+  }, [visible]);
+
   const hasActiveFilters =
     levelFilter !== "all" || Boolean(tagFilter) || Boolean(query.trim());
 
@@ -77,9 +134,8 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
             <p className="text-label text-primary">Каталог · путь обучения</p>
             <h1 className="text-heading-1">Курсы</h1>
             <p className="max-w-xl text-body text-text-secondary">
-              Курсы открываются по порядку: завершите уроки и тесты текущего
-              шага, чтобы перейти к следующему. Программу закрытых курсов можно
-              просматривать заранее.
+              Основной путь открывается по порядку. Дополнительные курсы — награда
+              за пройденные шаги пути и накопленный XP; они не блокируют сертификат.
             </p>
           </ReadablePanel>
         </FadeIn>
@@ -178,21 +234,29 @@ export function CourseCatalog({ courses }: { courses: CourseSummary[] }) {
           ) : null}
         </div>
 
-        <div className="grid gap-4 sm:gap-5">
-          {visible.map((course, index) => (
-            <SlideUp key={course.id} delay={index * 0.04}>
-              <CourseCard
-                course={course}
-                locked={!isLoading && !isUnlocked(course.slug)}
-              />
-            </SlideUp>
-          ))}
-          {visible.length === 0 ? (
-            <p className="py-12 text-center text-caption">
-              Ничего не найдено. Попробуйте другой запрос или сбросьте фильтры.
-            </p>
-          ) : null}
-        </div>
+        {visible.length === 0 ? (
+          <p className="py-12 text-center text-caption">
+            Ничего не найдено. Попробуйте другой запрос или сбросьте фильтры.
+          </p>
+        ) : (
+          <div className="space-y-10">
+            <CourseSection
+              title="Основной путь"
+              description="Семь шагов от основ до сложных продуктов. Завершение пути открывает сертификат."
+              courses={pathCourses}
+              isUnlocked={isUnlocked}
+              isLoading={isLoading}
+            />
+            <CourseSection
+              title="Дополнительно"
+              description="Тематические модули-награды. Открываются за завершённые курсы основного пути и XP."
+              courses={sideCourses}
+              isUnlocked={isUnlocked}
+              isLoading={isLoading}
+              startIndex={pathCourses.length}
+            />
+          </div>
+        )}
       </ScreenContainer>
     </div>
   );

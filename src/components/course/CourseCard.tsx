@@ -51,7 +51,7 @@ export function CourseCard({
           {locked ? (
             <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-[var(--radius-md)] bg-background/85 px-2 py-1 text-[0.65rem] font-medium text-text-primary shadow-xs backdrop-blur-sm">
               <Lock className="size-3" />
-              Закрыт
+              {accent.step === 0 ? "Награда" : "Закрыт"}
             </span>
           ) : null}
         </div>

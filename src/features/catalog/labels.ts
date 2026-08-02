@@ -96,7 +96,33 @@ const courseMeta: Record<
     short: "Продукты",
     level: "advanced",
   },
+  "first-100k": {
+    step: 0,
+    short: "План",
+    level: "beginner",
+  },
+  dividends: {
+    step: 0,
+    short: "Дивиденды",
+    level: "intermediate",
+  },
+  "crypto-without-illusions": {
+    step: 0,
+    short: "Крипто",
+    level: "intermediate",
+  },
 };
+
+/** Side courses outside the sequential main path */
+export const sideCourseSlugs = [
+  "first-100k",
+  "dividends",
+  "crypto-without-illusions",
+] as const;
+
+export function isLearningPathCourse(slug: string): boolean {
+  return (learningPathOrder as readonly string[]).includes(slug);
+}
 
 export type CourseAccent = {
   bg: string;
@@ -120,10 +146,14 @@ export function getCourseAccent(slug: string): CourseAccent {
     };
   }
   const tokens = levelAccentTokens[meta.level];
+  const label =
+    meta.step > 0
+      ? `Шаг ${meta.step} · ${meta.short}`
+      : `Дополнительно · ${meta.short}`;
   return {
     bg: tokens.bg,
     fg: tokens.fg,
-    label: `Шаг ${meta.step} · ${meta.short}`,
+    label,
     step: meta.step,
     short: meta.short,
     hex: tokens.hex,
@@ -139,6 +169,9 @@ export const courseCovers: Record<string, string> = {
   "advanced-behavior": "/images/covers/advanced-behavior-system.jpg",
   "advanced-portfolio": "/images/covers/advanced-portfolio-system.jpg",
   "advanced-products": "/images/covers/advanced-products-system.jpg",
+  "first-100k": "/images/covers/first-100k-cover.jpg",
+  dividends: "/images/covers/dividends-cover.jpg",
+  "crypto-without-illusions": "/images/covers/crypto-without-illusions-cover.jpg",
 };
 
 export function getCourseCover(slug: string): string | undefined {

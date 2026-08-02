@@ -9,6 +9,10 @@ export interface LessonProgress {
   score?: number;
   startedAt?: string;
   completedAt?: string;
+  /** ISO timestamp of last spaced review attempt. */
+  lastReviewedAt?: string;
+  /** Days until next review after lastReviewedAt/completedAt. */
+  reviewIntervalDays?: number;
   version: number;
 }
 

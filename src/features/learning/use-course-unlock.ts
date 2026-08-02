@@ -11,6 +11,7 @@ import {
   isCourseContentUnlocked,
   isCourseFullyComplete,
 } from "@/features/learning/unlock";
+import { getSideCourseLockReason } from "@/features/learning/side-course-rewards";
 import { learningPathOrder } from "@/features/catalog/labels";
 
 type UnlockCourse = Pick<
@@ -66,6 +67,10 @@ export function useCourseUnlock(courses: UnlockCourse[]) {
 
   function getLockReason(slug: string): string | null {
     if (isUnlocked(slug)) return null;
+
+    const sideReason = getSideCourseLockReason(slug, snapshot, bySlug);
+    if (sideReason) return sideReason;
+
     const previousSlug = getPreviousCourseSlug(slug);
     if (!previousSlug) return null;
     const previous = bySlug.get(previousSlug);

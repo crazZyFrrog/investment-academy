@@ -131,3 +131,33 @@ export function useImportProgress(userId: string) {
     },
   });
 }
+
+export function useRecordReview(
+  userId: string,
+  courseId: string,
+  totalLessons: number
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      lessonId,
+      passed,
+    }: {
+      lessonId: string;
+      passed: boolean;
+    }) =>
+      getLocalRepo(userId).recordReview(
+        courseId,
+        lessonId,
+        totalLessons,
+        passed
+      ),
+    onSuccess: (data: CourseProgress) => {
+      queryClient.setQueryData(progressKeys.course(userId, courseId), data);
+      void queryClient.invalidateQueries({
+        queryKey: progressKeys.snapshot(userId),
+      });
+    },
+  });
+}

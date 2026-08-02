@@ -15,6 +15,7 @@ import { AUTH_ENABLED } from "@/data/auth/flags";
 import {
   completeLesson,
   recomputeCourseProgress,
+  recordLessonReview,
   startLesson,
 } from "@/domain/progress/service";
 import { createId } from "@/lib/id";
@@ -240,6 +241,38 @@ export class LocalProgressRepository {
     }
 
     return { courseProgress: updated, reward };
+  }
+
+  async recordReview(
+    courseId: string,
+    lessonId: string,
+    totalLessons: number,
+    passed: boolean
+  ): Promise<CourseProgress> {
+    const snapshot = await this.getSnapshot();
+    const current =
+      snapshot.courses[courseId] ??
+      recomputeCourseProgress(courseId, totalLessons, {});
+
+    const updated = recomputeCourseProgress(
+      courseId,
+      totalLessons,
+      recordLessonReview(
+        { ...current, totalLessons },
+        lessonId,
+        passed
+      ).lessons
+    );
+
+    const nextSnapshot: ProgressSnapshot = {
+      ...snapshot,
+      courses: { ...snapshot.courses, [courseId]: updated },
+      updatedAt: new Date().toISOString(),
+      gamification: normalizeGamificationState(snapshot.gamification),
+    };
+
+    await this.saveSnapshot(nextSnapshot);
+    return updated;
   }
 
   async enqueueMutation(mutation: ProgressMutation): Promise<void> {

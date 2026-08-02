@@ -1,0 +1,16 @@
+{
+  "id": "dividends",
+  "title": "Дивиденды без иллюзий",
+  "description": "Что такое дивиденд, почему высокая доходность бывает ловушкой, как сравнивать дивиденды и рост и какие дисциплины нужны дивидендному инвестору.",
+  "level": "intermediate",
+  "order": 102,
+  "tags": ["дивиденды", "доход", "акции", "налоги"],
+  "estimatedMinutes": 76,
+  "contentVersion": "1.0.0",
+  "lessonOrder": [
+    "chto-takoe-dividend",
+    "lovushka-dohodnosti",
+    "dividendy-vs-rost",
+    "nalogi-i-disciplina"
+  ]
+}

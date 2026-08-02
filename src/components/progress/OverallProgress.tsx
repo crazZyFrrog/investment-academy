@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card } from "@/components/ui/card";
 import { BookOpen, ArrowRight } from "@/design-system/icons";
-import { sortByLearningPath } from "@/features/catalog/labels";
+import { sortByLearningPath, learningPathOrder } from "@/features/catalog/labels";
 import { ProgressRing } from "@/components/progress/ProgressRing";
 import {
   CourseProgressList,
@@ -15,7 +15,9 @@ import {
 } from "@/components/progress/CourseProgressList";
 import { CompositionBar } from "@/components/progress/CompositionBar";
 import { GamificationPanel } from "@/components/progress/GamificationPanel";
+import { PathCertificate } from "@/components/progress/PathCertificate";
 import { FadeIn, SlideUp } from "@/components/motion";
+import { isCourseFullyComplete } from "@/features/learning/unlock";
 
 export function OverallProgress({
   snapshot,
@@ -92,14 +94,33 @@ export function OverallProgress({
 
   const hasAnyCompletion = completedLessons > 0;
 
+  const pathCourses = learningPathOrder
+    .map((slug) => ordered.find((course) => course.slug === slug))
+    .filter((course): course is CourseSummary => Boolean(course));
+
+  const pathCompletedCount = pathCourses.filter((course) =>
+    isCourseFullyComplete(snapshot, course.id, course.lessonCount)
+  ).length;
+  const pathComplete =
+    pathCourses.length === learningPathOrder.length &&
+    pathCompletedCount >= learningPathOrder.length;
+
   return (
     <div className="space-y-8">
       <FadeIn>
         <GamificationPanel gamification={snapshot.gamification} />
       </FadeIn>
 
+      <FadeIn delay={0.03}>
+        <PathCertificate
+          pathCompletedCount={pathCompletedCount}
+          pathCourses={pathCourses}
+          completed={pathComplete}
+        />
+      </FadeIn>
+
       <SlideUp>
-        <Card className="flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8">
+        <Card className="flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8 print:hidden">
           <ProgressRing value={overall} size={128} strokeWidth={9} label="всего" />
           <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
             <h2 className="text-heading-3">Общий прогресс</h2>
@@ -112,7 +133,7 @@ export function OverallProgress({
       </SlideUp>
 
       {hasAnyCompletion ? (
-        <FadeIn delay={0.06} className="space-y-3">
+        <FadeIn delay={0.06} className="space-y-3 print:hidden">
           <h2 className="text-heading-3">По курсам</h2>
           <p className="text-caption">
             Доля завершённых уроков среди тех, что уже пройдены
@@ -121,7 +142,7 @@ export function OverallProgress({
         </FadeIn>
       ) : null}
 
-      <FadeIn delay={0.1} className="space-y-4">
+      <FadeIn delay={0.1} className="space-y-4 print:hidden">
         <h2 className="text-heading-3">Детали</h2>
         <CourseProgressList items={items} />
       </FadeIn>

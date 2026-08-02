@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
+  Bookmark,
   GraduationCap,
   LayoutDashboard,
   Settings,
@@ -14,6 +15,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/dashboard", label: "Главная", icon: LayoutDashboard },
   { href: "/courses", label: "Курсы", icon: BookOpen },
+  { href: "/glossary", label: "Словарь", icon: Bookmark },
   { href: "/progress", label: "Прогресс", icon: TrendingUp },
   { href: "/settings", label: "Ещё", icon: Settings },
 ];

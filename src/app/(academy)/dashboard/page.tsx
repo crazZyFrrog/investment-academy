@@ -1,12 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getCourses, getLessonSummaries } from "@/data/content/loader";
+import {
+  getDailyInsights,
+  pickDailyInsight,
+} from "@/data/content/insights";
 import { ScreenContainer } from "@/components/ui/screen-container";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/motion";
 import { ContinueLearningCard } from "@/features/dashboard/ContinueLearningCard";
 import { DailyHabitCard } from "@/features/dashboard/DailyHabitCard";
 import { DailyInsightCard } from "@/features/dashboard/DailyInsightCard";
+import { ReviewDueCard } from "@/features/review/ReviewDueCard";
 import { ArrowRight } from "@/design-system/icons";
 import { sortByLearningPath } from "@/features/catalog/labels";
 import { DashboardPathProgress } from "@/features/dashboard/DashboardPathProgress";
@@ -16,7 +21,12 @@ import { ReadablePanel } from "@/components/layout/ReadablePanel";
 import { EditorialPathMark } from "@/components/layout/EditorialPathMark";
 
 export default async function DashboardPage() {
-  const courses = sortByLearningPath(await getCourses());
+  const [coursesRaw, insights] = await Promise.all([
+    getCourses(),
+    getDailyInsights(),
+  ]);
+  const courses = sortByLearningPath(coursesRaw);
+  const insight = pickDailyInsight(insights);
 
   const lessonsEntries = await Promise.all(
     courses.map(async (course) => {
@@ -53,6 +63,10 @@ export default async function DashboardPage() {
               lessonsByCourseId={lessonsByCourseId}
             />
             <ContinueLearningCard
+              courses={courses}
+              lessonsByCourseId={lessonsByCourseId}
+            />
+            <ReviewDueCard
               courses={courses}
               lessonsByCourseId={lessonsByCourseId}
             />
@@ -96,7 +110,7 @@ export default async function DashboardPage() {
         </section>
 
         <FadeIn delay={0.08}>
-          <DailyInsightCard />
+          <DailyInsightCard insight={insight} />
         </FadeIn>
       </ScreenContainer>
     </div>

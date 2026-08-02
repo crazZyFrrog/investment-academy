@@ -1,6 +1,7 @@
 import type { CourseSummary } from "@/domain/course/types";
 import type { ProgressSnapshot } from "@/domain/progress/types";
 import { learningPathOrder } from "@/features/catalog/labels";
+import { isSideCourseRewardUnlocked } from "@/features/learning/side-course-rewards";
 
 export function getLearningPathIndex(slug: string): number {
   return (learningPathOrder as readonly string[]).indexOf(slug);
@@ -31,8 +32,8 @@ export function isCourseFullyComplete(
 }
 
 /**
- * Course unlocks when the previous course in learningPathOrder is fully complete.
- * The first path course is always open. Courses outside the path stay open.
+ * Path courses unlock when the previous course in learningPathOrder is complete.
+ * Side courses unlock as rewards for completed path courses + XP.
  */
 export function isCourseContentUnlocked(
   slug: string,
@@ -40,7 +41,12 @@ export function isCourseContentUnlocked(
   coursesBySlug: Map<string, Pick<CourseSummary, "id" | "slug" | "lessonCount">>
 ): boolean {
   const index = getLearningPathIndex(slug);
-  if (index <= 0) return true;
+
+  if (index < 0) {
+    return isSideCourseRewardUnlocked(slug, snapshot, coursesBySlug);
+  }
+
+  if (index === 0) return true;
 
   const previousSlug = learningPathOrder[index - 1];
   const previous = coursesBySlug.get(previousSlug);

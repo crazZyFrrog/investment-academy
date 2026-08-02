@@ -1,4 +1,8 @@
 import type { CourseProgress, LessonProgress, LessonStatus } from "./types";
+import {
+  applyFailedReview,
+  applySuccessfulReview,
+} from "@/domain/review/service";
 
 const STATUS_RANK: Record<LessonStatus, number> = {
   not_started: 0,
@@ -38,11 +42,31 @@ export function completeLesson(
     status: "completed",
     score: score ?? existing?.score,
     startedAt: existing?.startedAt ?? new Date().toISOString(),
-    completedAt: new Date().toISOString(),
+    completedAt: existing?.completedAt ?? new Date().toISOString(),
+    lastReviewedAt: existing?.lastReviewedAt,
+    reviewIntervalDays: existing?.reviewIntervalDays ?? 1,
     version: (existing?.version ?? 0) + 1,
   };
 
   return upsertLessonProgress(courseProgress, lessonProgress);
+}
+
+export function recordLessonReview(
+  courseProgress: CourseProgress,
+  lessonId: string,
+  passed: boolean,
+  now: Date = new Date()
+): CourseProgress {
+  const existing = courseProgress.lessons[lessonId];
+  if (!existing || existing.status !== "completed") {
+    return courseProgress;
+  }
+
+  const updated = passed
+    ? applySuccessfulReview(existing, now)
+    : applyFailedReview(existing, now);
+
+  return upsertLessonProgress(courseProgress, updated);
 }
 
 export function recomputeCourseProgress(

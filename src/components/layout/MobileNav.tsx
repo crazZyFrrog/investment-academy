@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
+  Bookmark,
   LayoutDashboard,
   Settings,
   TrendingUp,
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 const items = [
   { href: "/dashboard", label: "Главная", icon: LayoutDashboard },
   { href: "/courses", label: "Курсы", icon: BookOpen },
+  { href: "/glossary", label: "Словарь", icon: Bookmark },
   { href: "/progress", label: "Прогресс", icon: TrendingUp },
   { href: "/settings", label: "Ещё", icon: Settings },
 ];
@@ -37,7 +39,7 @@ export function MobileNav() {
       className="fixed inset-x-0 bottom-0 z-[var(--z-sticky)] border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
       aria-label="Мобильная навигация"
     >
-      <div className="mx-auto grid max-w-lg grid-cols-4 px-1">
+      <div className="mx-auto grid max-w-lg grid-cols-5 px-1">
         {items.map(({ href, label, icon: Icon }) => {
           const active = isActive(pathname, href);
           return (
