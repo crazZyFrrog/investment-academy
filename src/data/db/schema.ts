@@ -97,3 +97,28 @@ export const syncEvents = pgTable("sync_events", {
   occurredAt: timestamp("occurred_at", { mode: "date" }).notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
+
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  provider: text("provider").notNull(),
+  providerCustomerId: text("provider_customer_id"),
+  providerSubscriptionId: text("provider_subscription_id").notNull().unique(),
+  productId: text("product_id").notNull(),
+  status: text("status").notNull(),
+  currentPeriodEnd: timestamp("current_period_end", { mode: "date" }),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const entitlements = pgTable("entitlements", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  key: text("key").notNull(),
+  source: text("source").notNull(),
+  expiresAt: timestamp("expires_at", { mode: "date" }),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});

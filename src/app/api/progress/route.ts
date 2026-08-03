@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/data/auth/config";
 import { RemoteProgressRepository } from "@/data/progress/remote-repository";
 import { logger } from "@/lib/logger";
+import { rateLimit, requestIp } from "@/lib/rate-limit";
 
 const mutationSchema = z.object({
   mutation: z.object({
@@ -35,6 +36,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const limit = rateLimit(`progress:${requestIp(request)}`, 120, 60_000);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+    );
+  }
   const session = await auth();
 
   if (!session?.user?.id) {

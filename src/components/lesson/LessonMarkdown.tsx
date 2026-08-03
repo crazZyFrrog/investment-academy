@@ -110,7 +110,8 @@ export function LessonMarkdown({
   const [mounted, setMounted] = useState(mdxClientReady);
   useEffect(() => {
     mdxClientReady = true;
-    setMounted(true);
+    const timer = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const components = {

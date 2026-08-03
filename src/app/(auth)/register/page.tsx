@@ -1,20 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   if (!AUTH_ENABLED) {
     return (
       <div className="space-y-6 text-center">
@@ -32,28 +23,6 @@ export default function RegisterPage() {
     );
   }
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const result = await signIn("credentials", {
-      email,
-      name,
-      redirect: false,
-    });
-
-    setLoading(false);
-
-    if (result?.error) {
-      setError("Unable to create account. Try again.");
-      return;
-    }
-
-    router.push("/dashboard");
-    router.refresh();
-  }
-
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-center">
@@ -62,35 +31,14 @@ export default function RegisterPage() {
           Save and sync your learning progress.
         </p>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            placeholder="Alex"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            placeholder="you@example.com"
-          />
-        </div>
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Creating account..." : "Create account"}
+      <div className="space-y-3">
+        <Button type="button" className="w-full" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
+          Create account with Google
         </Button>
-      </form>
+        <Button type="button" variant="outline" className="w-full" onClick={() => signIn("apple", { callbackUrl: "/dashboard" })}>
+          Create account with Apple
+        </Button>
+      </div>
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link href="/login" className="text-primary hover:underline">

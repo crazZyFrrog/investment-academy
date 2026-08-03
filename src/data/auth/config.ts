@@ -1,69 +1,55 @@
 import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import Apple from "next-auth/providers/apple";
+import Google from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { eq } from "drizzle-orm";
 import { getDb } from "@/data/db/client";
-import * as schema from "@/data/db/schema";
+import { AUTH_ENABLED } from "./flags";
+import { getEnv } from "@/lib/env";
+
+const env = getEnv();
+const providers = [];
+
+if (AUTH_ENABLED && !env.AUTH_SECRET) {
+  throw new Error("AUTH_SECRET is required when authentication is enabled.");
+}
+
+if (AUTH_ENABLED && process.env.NODE_ENV === "production" && !env.AUTH_URL) {
+  throw new Error("AUTH_URL is required for production authentication.");
+}
+
+if (AUTH_ENABLED && env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
+  providers.push(
+    Google({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    })
+  );
+}
+
+if (AUTH_ENABLED && env.APPLE_CLIENT_ID && env.APPLE_CLIENT_SECRET) {
+  providers.push(
+    Apple({
+      clientId: env.APPLE_CLIENT_ID,
+      clientSecret: env.APPLE_CLIENT_SECRET,
+    })
+  );
+}
+
+if (AUTH_ENABLED && providers.length === 0) {
+  throw new Error(
+    "Authentication is enabled but no OAuth provider is configured. Set Google or Apple credentials."
+  );
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.AUTH_SECRET,
-  trustHost: true,
+  secret: env.AUTH_SECRET,
+  trustHost: process.env.NODE_ENV !== "production",
   adapter: getDb() ? DrizzleAdapter(getDb()!) : undefined,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
   },
-  providers: [
-    Credentials({
-      name: "Email",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        name: { label: "Name", type: "text" },
-      },
-      async authorize(credentials) {
-        const email = credentials?.email?.toString().trim().toLowerCase();
-        const name = credentials?.name?.toString().trim();
-
-        if (!email) {
-          return null;
-        }
-
-        const db = getDb();
-        if (!db) {
-          return {
-            id: `guest-${email}`,
-            email,
-            name: name ?? email.split("@")[0],
-          };
-        }
-
-        const existing = await db
-          .select()
-          .from(schema.users)
-          .where(eq(schema.users.email, email))
-          .limit(1);
-
-        if (existing[0]) {
-          return {
-            id: existing[0].id,
-            email: existing[0].email ?? undefined,
-            name: existing[0].name ?? undefined,
-          };
-        }
-
-        const [created] = await db
-          .insert(schema.users)
-          .values({ email, name: name ?? email.split("@")[0] })
-          .returning();
-
-        return {
-          id: created.id,
-          email: created.email ?? undefined,
-          name: created.name ?? undefined,
-        };
-      },
-    }),
-  ],
+  providers,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
