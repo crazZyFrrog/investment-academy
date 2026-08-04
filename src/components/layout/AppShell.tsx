@@ -5,6 +5,8 @@ import { TopBar } from "./TopBar";
 import { SideNav } from "./SideNav";
 import { MobileNav } from "./MobileNav";
 import { EducationalDisclaimer } from "./EducationalDisclaimer";
+import { AUTH_ENABLED } from "@/data/auth/flags";
+import { GuestMergePrompt } from "@/features/auth/GuestMergePrompt";
 import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -29,6 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         ) : null}
       </div>
       <MobileNav />
+      {AUTH_ENABLED ? <GuestMergePrompt /> : null}
     </div>
   );
 }

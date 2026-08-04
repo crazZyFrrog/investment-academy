@@ -12,6 +12,8 @@ import {
   TrendingUp,
 } from "@/design-system/icons";
 import { cn } from "@/lib/utils";
+import { AUTH_ENABLED } from "@/data/auth/flags";
+import { SyncStatusBadge } from "@/components/progress/SyncStatusBadge";
 
 const navItems = [
   { href: "/dashboard", label: "Главная", icon: LayoutDashboard },
@@ -34,13 +36,14 @@ export function SideNav() {
 
   return (
     <aside className="hidden w-[15.5rem] shrink-0 border-r border-border bg-surface lg:block">
-      <div className="flex h-[4.25rem] items-center gap-2.5 px-6">
+      <div className="flex h-[4.25rem] items-center justify-between gap-2 px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <GraduationCap className="size-5 text-primary" aria-hidden />
           <span className="font-display text-[1.05rem] tracking-tight text-text-primary">
             Академия
           </span>
         </Link>
+        {AUTH_ENABLED ? <SyncStatusBadge /> : null}
       </div>
       <nav
         className="flex flex-col gap-1 px-3 pb-6"

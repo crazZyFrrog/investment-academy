@@ -1,72 +1,64 @@
 # Investment Academy
 
-PWA для спокойного обучения инвестициям: курсы, уроки с тестами, локальный прогресс.
+PWA для спокойного обучения инвестициям: курсы, уроки с тестами, локальный и облачный прогресс.
 
-## Режим сейчас (pre–1.0)
+## Version 1.0
 
-По умолчанию приложение работает **в гостевом режиме**:
+- Гостевой режим с офлайн-прогрессом (IndexedDB)
+- Вход через Google/Apple при `NEXT_PUBLIC_AUTH_ENABLED=true`
+- Синхронизация пройденных уроков между устройствами
+- Объединение гостевого прогресса с аккаунтом после входа
+- Legal-страницы: `/privacy`, `/terms`, `/delete-account`
 
-- прогресс хранится локально (IndexedDB);
-- Auth.js и sync на сервер **выключены** (`AUTH_ENABLED = false` в `src/data/auth/flags.ts`);
-- для локальной разработки база данных не обязательна.
+Подписки и магазины приложений — этап после 1.0 (см. [docs/COMMERCIAL_RELEASE.md](docs/COMMERCIAL_RELEASE.md)).
 
-Гостевые возможности уже в продукте:
-
-- последовательное открытие курсов и уроков;
-- тесты с обязательными 100% перед завершением урока;
-- черновик ответов квиза на устройстве;
-- тема оформления, экспорт/импорт и сброс прогресса в `/settings`;
-- поиск и фильтр курсов по тегам;
-- установка как PWA.
-
-Чтобы включить вход и синхронизацию прогресса позже (Version 1.0):
-
-1. задайте переменные из `.env.example`;
-2. поставьте `AUTH_ENABLED = true`;
-3. переключите экспорт в `src/hooks/use-user-id.ts` на `./use-user-id.session`;
-4. примените миграции БД (`npm run db:generate` / `npm run db:migrate`).
-
-## Quick start
+## Quick start (guest)
 
 ```bash
 npm install
-cp .env.example .env.local   # опционально для guest-only
+cp .env.example .env.local
 npm run dev
 ```
 
 Откройте [http://localhost:3000](http://localhost:3000).
 
-На телефоне в той же Wi‑Fi: `http://<IP-вашего-ПК>:3000` (не `localhost`).
-`npm run dev` слушает `0.0.0.0` и разрешает LAN в `allowedDevOrigins`.
-После смены конфига перезапустите dev-сервер.
+## Включить auth + sync
+
+Следуйте [docs/SETUP_V1.md](docs/SETUP_V1.md):
+
+1. Postgres + `DATABASE_URL`
+2. `AUTH_SECRET`, `AUTH_URL`, OAuth credentials
+3. `NEXT_PUBLIC_AUTH_ENABLED=true`
+4. `npm run db:migrate`
+5. `npm run dev`
 
 ## Scripts
 
 - `npm run dev` — development server
-- `npm run build` — production build
-- `npm run start` — production server
-- `npm run lint` — ESLint
-- `npm run typecheck` — TypeScript (`tsc --noEmit`)
-- `npm test` — unit tests (Vitest)
-- `npm run test:e2e` — Playwright smoke (desktop / mobile / tablet)
-- `npm run lighthouse` — mobile Lighthouse audit (needs `npm run build && npm run start` in another terminal)
-- `npm run db:generate` — generate Drizzle migrations
-- `npm run db:migrate` — apply migrations
+- `npm run build` / `npm run start` — production
+- `npm run lint` / `npm run typecheck` / `npm test` / `npm run test:e2e`
+- `npm run lighthouse` — mobile Lighthouse audit
+- `npm run db:generate` / `npm run db:migrate` — Drizzle migrations
 
-## Guest checklist
+## Checklist
 
 ```bash
 npm test
 npm run typecheck
 npm run test:e2e
 npm run build
-npm run start          # в другом терминале
-npm run lighthouse     # BASE_URL=http://127.0.0.1:3000 по умолчанию
 ```
+
+Auth-mode (после настройки env):
+
+1. Войти через Google
+2. Объединить гостевой прогресс (если был)
+3. Завершить урок → синхронизация в Settings
+4. Проверить прогресс во втором браузере
 
 ## Architecture
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/GUIDE_V1_MANUAL.md](docs/GUIDE_V1_MANUAL.md), [docs/GUIDE_TIMEWEB_V1.md](docs/GUIDE_TIMEWEB_V1.md), [docs/SETUP_V1.md](docs/SETUP_V1.md), [docs/COMMERCIAL_RELEASE.md](docs/COMMERCIAL_RELEASE.md).
 
 ## Stack
 

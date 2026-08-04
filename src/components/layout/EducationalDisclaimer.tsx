@@ -23,6 +23,20 @@ export function EducationalDisclaimer({
       >
         Подробнее
       </Link>
+      {" · "}
+      <Link
+        href="/privacy"
+        className="underline decoration-border underline-offset-2 hover:text-text-secondary"
+      >
+        Конфиденциальность
+      </Link>
+      {" · "}
+      <Link
+        href="/terms"
+        className="underline decoration-border underline-offset-2 hover:text-text-secondary"
+      >
+        Условия
+      </Link>
     </p>
   );
 }

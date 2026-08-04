@@ -46,14 +46,18 @@ Serwist service worker (`src/app/sw.ts`) with precache + runtime caching. Manife
 
 ## Auth
 
-Auth.js (NextAuth v5) code, routes, and dependencies remain in the repo.
+Auth.js (NextAuth v5) with Google/Apple OAuth, JWT sessions, and Drizzle adapter.
 
-**Current status (pre–Version 1.0):** authentication integration is disabled via `AUTH_ENABLED = false` in `src/data/auth/flags.ts`.
+**Enable with env** (see [SETUP_V1.md](./SETUP_V1.md)):
 
-- Guest Mode is the default identity (`useUserId` → local guest id).
-- `SessionProvider` is not mounted, so there is no automatic `/api/auth/session` fetch.
-- Login/register UI is gated; Auth.js handlers under `/api/auth/*` are still present.
-- Set `AUTH_ENABLED` to `true` and switch `src/hooks/use-user-id.ts` to the session export to re-enable for Version 1.0.
+```bash
+NEXT_PUBLIC_AUTH_ENABLED=true
+```
+
+- Guest Mode remains available without sign-in (`useUserId` falls back to local guest id).
+- When enabled, `SessionProvider` mounts and `/api/auth/*` handlers are live.
+- Guest → account merge prompt after first sign-in (`/api/progress/merge`).
+- Cloud sync covers lesson/course progress; XP, streaks, rewards, and review intervals stay local in 1.0.
 
 ## Database
 

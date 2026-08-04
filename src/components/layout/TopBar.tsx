@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GraduationCap } from "@/design-system/icons";
+import { AUTH_ENABLED } from "@/data/auth/flags";
+import { SyncStatusBadge } from "@/components/progress/SyncStatusBadge";
 
 export function TopBar() {
   const pathname = usePathname();
@@ -18,6 +20,7 @@ export function TopBar() {
         <GraduationCap className="size-5 text-primary" aria-hidden />
         <span className="font-display text-lg tracking-tight">Академия</span>
       </Link>
+      {AUTH_ENABLED ? <SyncStatusBadge /> : null}
     </header>
   );
 }

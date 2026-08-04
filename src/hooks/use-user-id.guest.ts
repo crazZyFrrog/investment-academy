@@ -33,6 +33,15 @@ export function getGuestId(): string {
   return guestId;
 }
 
+/** Drop guest identity after a successful account merge. */
+export function clearGuestId(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  localStorage.removeItem(GUEST_ID_KEY);
+  cachedGuestId = null;
+}
+
 function subscribe() {
   // Identity is stable for the session after first client read
   return () => {};

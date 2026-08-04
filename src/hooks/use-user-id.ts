@@ -1,6 +1,19 @@
+"use client";
+
+import { AUTH_ENABLED } from "@/data/auth/flags";
+import {
+  useUserId as useGuestUserId,
+  getGuestId,
+  clearGuestId,
+} from "./use-user-id.guest";
+import { useUserId as useSessionUserId } from "./use-user-id.session";
+
+export { getGuestId, clearGuestId };
+
 /**
- * Active identity hook.
- * Guest mode is default while AUTH_ENABLED is false (pre–Version 1.0).
- * Switch the export to `./use-user-id.session` when re-enabling auth.
+ * Session-aware when NEXT_PUBLIC_AUTH_ENABLED=true; guest otherwise.
+ * Branch is fixed per build so hook order stays stable.
  */
-export { useUserId, getGuestId } from "./use-user-id.guest";
+export const useUserId: () => string = AUTH_ENABLED
+  ? useSessionUserId
+  : useGuestUserId;

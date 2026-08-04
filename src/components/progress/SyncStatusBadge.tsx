@@ -37,14 +37,14 @@ function GuestSyncStatusBadge() {
     return (
       <Badge variant="outline" className="gap-1">
         <CloudOff className="h-3 w-3" />
-        Offline
+        Офлайн
       </Badge>
     );
   }
 
   return (
     <Badge variant="outline" className="gap-1">
-      Guest mode
+      Гость
     </Badge>
   );
 }
@@ -74,7 +74,7 @@ function AuthenticatedSyncStatusBadge() {
     return (
       <Badge variant="outline" className="gap-1">
         <CloudOff className="h-3 w-3" />
-        Offline
+        Офлайн
       </Badge>
     );
   }
@@ -83,7 +83,7 @@ function AuthenticatedSyncStatusBadge() {
     return (
       <Badge variant="outline" className="gap-1">
         <RefreshCw className="h-3 w-3 animate-spin" />
-        Syncing
+        Синхронизация
       </Badge>
     );
   }
@@ -92,14 +92,14 @@ function AuthenticatedSyncStatusBadge() {
     return (
       <Badge variant="secondary" className="gap-1">
         <Cloud className="h-3 w-3" />
-        Synced
+        Синхронизировано
       </Badge>
     );
   }
 
   return (
     <Badge variant="outline" className="gap-1">
-      Guest mode
+      Гость
     </Badge>
   );
 }

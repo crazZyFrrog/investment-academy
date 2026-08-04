@@ -7,14 +7,9 @@ export default auth((request) => {
     return NextResponse.next();
   }
 
-  const acceptsHtml = request.headers.get("accept")?.includes("text/html");
-  if (acceptsHtml) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 });
 
 export const config = {
-  matcher: ["/settings/:path*", "/api/entitlements/:path*", "/api/progress/merge"],
+  matcher: ["/api/entitlements/:path*", "/api/progress/merge"],
 };

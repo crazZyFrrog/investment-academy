@@ -1,9 +1,21 @@
 export default function TermsPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-6 py-16">
-      <h1 className="font-display text-4xl">Terms of Service</h1>
-      <p>Investment Academy provides educational content only. It is not financial, investment, tax, or legal advice.</p>
-      <p>Subscriptions unlock educational features for the period shown at checkout. Store cancellation, refund, and renewal rules apply according to the store or payment provider used.</p>
+      <h1 className="font-display text-4xl">Условия использования</h1>
+      <p className="text-body text-text-secondary">
+        Investment Academy предоставляет образовательные материалы о рынках и
+        инвестициях. Это не индивидуальная инвестиционная, налоговая или
+        юридическая консультация.
+      </p>
+      <p className="text-body text-text-secondary">
+        Вы можете пользоваться сервисом как гость или с аккаунтом. За
+        сохранность локальных данных на устройстве отвечаете вы; при входе в
+        аккаунт пройденные уроки могут синхронизироваться на сервер.
+      </p>
+      <p className="text-body text-text-secondary">
+        Условия подписок, отмены и возвратов (когда они появятся) определяются
+        правилами платёжного провайдера или магазина приложений.
+      </p>
     </main>
   );
 }

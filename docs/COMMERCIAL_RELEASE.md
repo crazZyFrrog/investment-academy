@@ -2,7 +2,7 @@
 
 ## Web
 
-- Set `AUTH_ENABLED` to `true` only after configuring `AUTH_SECRET`, `AUTH_URL`, and at least one OAuth provider.
+- Set `NEXT_PUBLIC_AUTH_ENABLED=true` only after configuring `AUTH_SECRET`, `AUTH_URL`, and at least one OAuth provider (see [SETUP_V1.md](./SETUP_V1.md)).
 - Run `npm run db:generate` and `npm run db:migrate` after reviewing the subscription and entitlement schema.
 - Configure `BILLING_WEBHOOK_SECRET` and send signed entitlement events to `/api/billing/webhook`.
 - Connect Stripe Checkout/Customer Portal and Apple/Google purchase validation to that webhook contract. Never grant premium access from client state.

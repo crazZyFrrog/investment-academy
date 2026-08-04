@@ -12,8 +12,7 @@ export default function RegisterPage() {
         <div className="space-y-2">
           <h1 className="font-display text-2xl">Гостевой режим</h1>
           <p className="text-sm text-muted-foreground">
-            Регистрация временно отключена. Продолжайте как гость — создание
-            аккаунта появится в версии 1.0.
+            Регистрация пока выключена на этом окружении. Продолжайте как гость.
           </p>
         </div>
         <Button className="w-full" asChild>
@@ -26,23 +25,32 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-center">
-        <h1 className="font-display text-2xl">Create account</h1>
+        <h1 className="font-display text-2xl">Создать аккаунт</h1>
         <p className="text-sm text-muted-foreground">
-          Save and sync your learning progress.
+          Сохраняйте и синхронизируйте прогресс обучения.
         </p>
       </div>
       <div className="space-y-3">
-        <Button type="button" className="w-full" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
-          Create account with Google
+        <Button
+          type="button"
+          className="w-full"
+          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+        >
+          Создать через Google
         </Button>
-        <Button type="button" variant="outline" className="w-full" onClick={() => signIn("apple", { callbackUrl: "/dashboard" })}>
-          Create account with Apple
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          onClick={() => signIn("apple", { callbackUrl: "/dashboard" })}
+        >
+          Создать через Apple
         </Button>
       </div>
       <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Уже есть аккаунт?{" "}
         <Link href="/login" className="text-primary hover:underline">
-          Sign in
+          Войти
         </Link>
       </p>
     </div>

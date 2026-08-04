@@ -157,6 +157,38 @@ test.describe("guest utilities", () => {
     await expect(
       page.getByRole("button", { name: /Сбросить/i })
     ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Документы" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Политика конфиденциальности" })
+    ).toBeVisible();
+  });
+
+  test("legal pages open", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "desktop smoke only");
+    await gotoPath(page, "/privacy");
+    await expect(
+      page.getByRole("heading", { name: "Политика конфиденциальности" })
+    ).toBeVisible();
+    await gotoPath(page, "/terms");
+    await expect(
+      page.getByRole("heading", { name: "Условия использования" })
+    ).toBeVisible();
+    await gotoPath(page, "/delete-account");
+    await expect(
+      page.getByRole("heading", { name: "Удаление аккаунта" })
+    ).toBeVisible();
+  });
+
+  test("login page offers guest continue when auth is off", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "desktop smoke only");
+    await gotoPath(page, "/login");
+    await expect(
+      page.getByRole("link", { name: /Продолжить как гость/i })
+    ).toBeVisible();
   });
 
   test("catalog search and tags filter courses", async ({ page }, testInfo) => {
