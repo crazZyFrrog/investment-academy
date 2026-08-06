@@ -14,6 +14,36 @@ const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
 const STORAGE_KEY = "investment-academy-theme";
 
+const themeListeners = new Set<() => void>();
+let memoryTheme: Theme | null = null;
+
+function emitTheme() {
+  themeListeners.forEach((listener) => listener());
+}
+
+function readStoredTheme(fallback: Theme): Theme {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "light" || stored === "dark" || stored === "system") {
+      return stored;
+    }
+  } catch {
+    // ignore quota / private mode
+  }
+  return fallback;
+}
+
+function getThemeSnapshot(): Theme {
+  if (memoryTheme) return memoryTheme;
+  return readStoredTheme("system");
+}
+
+function subscribeTheme(onStoreChange: () => void) {
+  themeListeners.add(onStoreChange);
+  return () => themeListeners.delete(onStoreChange);
+}
+
 function getSystemTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -21,13 +51,10 @@ function getSystemTheme(): "light" | "dark" {
     : "light";
 }
 
-function readStoredTheme(fallback: Theme): Theme {
-  if (typeof window === "undefined") return fallback;
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === "light" || stored === "dark" || stored === "system") {
-    return stored;
-  }
-  return fallback;
+function subscribeSystemTheme(onStoreChange: () => void) {
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", onStoreChange);
+  return () => media.removeEventListener("change", onStoreChange);
 }
 
 function applyThemeClass(resolved: "light" | "dark") {
@@ -38,12 +65,6 @@ function applyThemeClass(resolved: "light" | "dark") {
   root.style.colorScheme = resolved;
 }
 
-function subscribeSystemTheme(onStoreChange: () => void) {
-  const media = window.matchMedia("(prefers-color-scheme: dark)");
-  media.addEventListener("change", onStoreChange);
-  return () => media.removeEventListener("change", onStoreChange);
-}
-
 export function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -51,8 +72,10 @@ export function ThemeProvider({
   children: React.ReactNode;
   defaultTheme?: Theme;
 }) {
-  const [theme, setThemeState] = React.useState<Theme>(() =>
-    readStoredTheme(defaultTheme)
+  const theme = React.useSyncExternalStore(
+    subscribeTheme,
+    getThemeSnapshot,
+    () => defaultTheme
   );
 
   const systemTheme = React.useSyncExternalStore(
@@ -68,8 +91,13 @@ export function ThemeProvider({
   }, [resolvedTheme]);
 
   const setTheme = React.useCallback((next: Theme) => {
-    setThemeState(next);
-    localStorage.setItem(STORAGE_KEY, next);
+    memoryTheme = next;
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // ignore quota / private mode
+    }
+    emitTheme();
   }, []);
 
   const value = React.useMemo(

@@ -1,9 +1,10 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 
-let client: ReturnType<typeof postgres> | null = null;
-let db: ReturnType<typeof drizzle<typeof schema>> | null = null;
+type Db = ReturnType<typeof drizzle<typeof schema>>;
+
+let db: Db | null = null;
 
 export function getDb() {
   const databaseUrl = process.env.DATABASE_URL;
@@ -12,9 +13,11 @@ export function getDb() {
     return null;
   }
 
-  if (!client) {
-    client = postgres(databaseUrl, { prepare: false });
-    db = drizzle(client, { schema });
+  if (!db) {
+    // HTTP driver is more reliable with Neon free-tier cold starts
+    // than a long-lived TCP connection (postgres.js / ECONNRESET).
+    const sql = neon(databaseUrl);
+    db = drizzle(sql, { schema });
   }
 
   return db;

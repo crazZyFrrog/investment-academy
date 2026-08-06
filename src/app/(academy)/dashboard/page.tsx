@@ -92,7 +92,7 @@ export default async function DashboardPage() {
           <FadeIn delay={0.04}>
             <div className="relative h-36 overflow-hidden rounded-[var(--radius-xl)] border border-border sm:h-44">
               <Image
-                src="/images/dashboard-path.jpg"
+                src="/images/learning-path-banner.png"
                 alt=""
                 fill
                 sizes="(max-width: 768px) 100vw, 720px"

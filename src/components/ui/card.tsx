@@ -17,7 +17,7 @@ const cardVariants = cva(
         muted: "bg-surface-secondary shadow-none",
       },
       interactive: {
-        true: "cursor-pointer hover:border-border hover:shadow-sm hover:-translate-y-px active:translate-y-0 motion-reduce:hover:translate-y-0",
+        true: "cursor-pointer hover:border-primary/35 hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)] hover:-translate-y-px active:translate-y-0 motion-reduce:hover:translate-y-0",
         false: "",
       },
       padding: {

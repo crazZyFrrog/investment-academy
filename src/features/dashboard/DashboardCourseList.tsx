@@ -14,16 +14,18 @@ export function DashboardCourseList({
   const pathCourses = courses.filter((course) =>
     isLearningPathCourse(course.slug)
   );
-  const { isUnlocked, isLoading } = useCourseUnlock(courses);
+  const { isUnlocked, isLoading, snapshot } = useCourseUnlock(courses);
+  // Avoid lock-badge DOM mismatch before progress identity is ready.
+  const locksReady = Boolean(snapshot) && !isLoading;
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4 md:grid-cols-2">
       {pathCourses.map((course, index) => (
         <SlideUp key={course.id} delay={0.04 * index}>
           <CardHover>
             <CourseCard
               course={course}
-              locked={!isLoading && !isUnlocked(course.slug)}
+              locked={locksReady && !isUnlocked(course.slug)}
             />
           </CardHover>
         </SlideUp>

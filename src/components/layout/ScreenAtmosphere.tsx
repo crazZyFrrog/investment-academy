@@ -25,6 +25,10 @@ export function ScreenAtmosphere({
   className?: string;
   intensity?: AtmosphereIntensity;
 }) {
+  const atmosphereSrc = src.startsWith("/images/screens/")
+    ? "/images/hero-workspace.jpg"
+    : src;
+
   // Hero: full-viewport photo, no paper wash. Card provides readability.
   if (intensity === "hero") {
     return (
@@ -36,7 +40,7 @@ export function ScreenAtmosphere({
         aria-hidden
       >
         <Image
-          src={src}
+          src={atmosphereSrc}
           alt=""
           fill
           priority={priority}
@@ -46,6 +50,10 @@ export function ScreenAtmosphere({
         {/* Dark vignette only — never bleach with background/paper */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/12 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/15" />
+        <div
+          className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(168,255,22,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(168,255,22,0.08)_1px,transparent_1px)] [background-size:72px_72px]"
+          aria-hidden
+        />
       </div>
     );
   }
@@ -88,7 +96,7 @@ export function ScreenAtmosphere({
       aria-hidden
     >
       <Image
-        src={src}
+        src={atmosphereSrc}
         alt=""
         fill
         priority={priority}
@@ -115,6 +123,10 @@ export function ScreenAtmosphere({
           }
         />
       ) : null}
+      <div
+        className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(168,255,22,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(168,255,22,0.08)_1px,transparent_1px)] [background-size:72px_72px]"
+        aria-hidden
+      />
     </div>
   );
 }

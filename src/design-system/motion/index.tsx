@@ -73,7 +73,8 @@ type MotionDivProps = HTMLMotionProps<"div">;
 
 function useMotionSafe() {
   const prefersReduced = useReducedMotion();
-  return !prefersReduced;
+  // null during SSR/hydration — treat as "animate" so markup stays stable
+  return prefersReduced !== true;
 }
 
 export function FadeIn({
@@ -88,18 +89,14 @@ export function FadeIn({
 } & Omit<MotionDivProps, "children" | "className">) {
   const animate = useMotionSafe();
 
-  if (!animate) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       variants={fadeInVariants}
-      initial="hidden"
+      initial={animate ? "hidden" : false}
       animate="visible"
       transition={{
         duration: durationSeconds.moderate,
-        delay,
+        delay: animate ? delay : 0,
         ease: easing.standard,
       }}
       className={className}
@@ -122,18 +119,14 @@ export function SlideUp({
 } & Omit<MotionDivProps, "children" | "className">) {
   const animate = useMotionSafe();
 
-  if (!animate) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       variants={slideUpVariants}
-      initial="hidden"
+      initial={animate ? "hidden" : false}
       animate="visible"
       transition={{
         duration: durationSeconds.moderate,
-        delay,
+        delay: animate ? delay : 0,
         ease: easing.emphasized,
       }}
       className={className}
@@ -154,14 +147,10 @@ export function PageTransition({
 } & Omit<MotionDivProps, "children" | "className">) {
   const animate = useMotionSafe();
 
-  if (!animate) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       variants={pageTransitionVariants}
-      initial="initial"
+      initial={animate ? "initial" : false}
       animate="animate"
       exit="exit"
       className={className}
@@ -182,15 +171,11 @@ export function CardHover({
 } & Omit<MotionDivProps, "children" | "className">) {
   const animate = useMotionSafe();
 
-  if (!animate) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       variants={cardHoverVariants}
       initial="rest"
-      whileHover="hover"
+      whileHover={animate ? "hover" : undefined}
       className={className}
       {...props}
     >
@@ -209,15 +194,11 @@ export function ButtonPress({
 } & Omit<MotionDivProps, "children" | "className">) {
   const animate = useMotionSafe();
 
-  if (!animate) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       variants={buttonPressVariants}
       initial="rest"
-      whileTap="press"
+      whileTap={animate ? "press" : undefined}
       className={className}
       {...props}
     >
@@ -235,15 +216,11 @@ export function CelebrateComplete({
 }) {
   const animate = useMotionSafe();
 
-  if (!animate) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 4 }}
+      initial={animate ? { opacity: 0, y: 4 } : false}
       animate={{ opacity: 1, y: 0 }}
-      transition={easing.spring}
+      transition={animate ? easing.spring : { duration: 0 }}
       className={className}
     >
       {children}

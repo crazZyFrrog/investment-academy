@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GraduationCap } from "@/design-system/icons";
 import { AUTH_ENABLED } from "@/data/auth/flags";
-import { SyncStatusBadge } from "@/components/progress/SyncStatusBadge";
+import { UserAccountPanel } from "./UserAccountPanel";
 
 export function TopBar() {
   const pathname = usePathname();
@@ -15,12 +15,16 @@ export function TopBar() {
   }
 
   return (
-    <header className="flex h-[3.75rem] items-center justify-between px-5 lg:hidden">
-      <Link href="/" className="flex items-center gap-2">
-        <GraduationCap className="size-5 text-primary" aria-hidden />
-        <span className="font-display text-lg tracking-tight">Академия</span>
+    <header className="flex h-[3.75rem] items-center justify-between gap-3 px-5 lg:hidden">
+      <Link href="/" className="flex min-w-0 shrink items-center gap-2">
+        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
+          <GraduationCap className="size-5" aria-hidden />
+        </span>
+        <span className="truncate font-display text-lg tracking-tight">
+          Академия
+        </span>
       </Link>
-      {AUTH_ENABLED ? <SyncStatusBadge /> : null}
+      {AUTH_ENABLED ? <UserAccountPanel dense /> : null}
     </header>
   );
 }

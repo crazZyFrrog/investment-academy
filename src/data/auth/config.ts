@@ -3,6 +3,12 @@ import Apple from "next-auth/providers/apple";
 import Google from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { getDb } from "@/data/db/client";
+import {
+  accounts,
+  sessions,
+  users,
+  verificationTokens,
+} from "@/data/db/schema";
 import { AUTH_ENABLED } from "./flags";
 import { getEnv } from "@/lib/env";
 
@@ -22,6 +28,12 @@ if (AUTH_ENABLED && env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
     Google({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          // Always show Google account picker (multi-account / shared device).
+          prompt: "select_account",
+        },
+      },
     })
   );
 }
@@ -41,10 +53,19 @@ if (AUTH_ENABLED && providers.length === 0) {
   );
 }
 
+const db = getDb();
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: env.AUTH_SECRET,
   trustHost: process.env.NODE_ENV !== "production",
-  adapter: getDb() ? DrizzleAdapter(getDb()!) : undefined,
+  adapter: db
+    ? DrizzleAdapter(db, {
+        usersTable: users,
+        accountsTable: accounts,
+        sessionsTable: sessions,
+        verificationTokensTable: verificationTokens,
+      })
+    : undefined,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",

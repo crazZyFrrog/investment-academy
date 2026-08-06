@@ -14,7 +14,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isLesson = pathname.includes("/lessons/");
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background lg:flex-row">
+    <div className="academy-shell flex min-h-dvh flex-col bg-background lg:flex-row">
       {!isLesson ? <SideNav /> : null}
       <div
         className={cn(

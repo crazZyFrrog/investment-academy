@@ -96,7 +96,9 @@ export function ProgressBackupSettings() {
         <p className="text-body text-text-secondary">
           Экспортируйте JSON-бэкап перед сменой браузера или сбросьте данные на
           этом устройстве. Сейчас учтено курсов с прогрессом:{" "}
-          <span className="text-text-primary">{isLoading ? "…" : courseCount}</span>
+          <span className="text-text-primary">
+            {!userId || isLoading ? "…" : courseCount}
+          </span>
           .
         </p>
       </div>

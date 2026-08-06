@@ -55,14 +55,14 @@ export const metadata: Metadata = {
     title: "Investment Academy",
     description:
       "Спокойное обучение инвестициям: рынки, риск и долгий горизонт.",
-    images: [{ url: "/images/hero-landing.jpg", width: 1920, height: 1080 }],
+    images: [{ url: "/images/hero-workspace.jpg", width: 1920, height: 1080 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Investment Academy",
     description:
       "Спокойное обучение инвестициям: рынки, риск и долгий горизонт.",
-    images: ["/images/hero-landing.jpg"],
+    images: ["/images/hero-workspace.jpg"],
   },
   robots: {
     index: true,
@@ -78,7 +78,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${display.variable} ${body.variable} h-full`}>
+    <html
+      lang="ru"
+      className={`${display.variable} ${body.variable} h-full`}
+      suppressHydrationWarning
+    >
       <body className="min-h-full antialiased">
         <ThemeProvider>
           <AuthProvider>

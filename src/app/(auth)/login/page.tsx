@@ -36,7 +36,13 @@ export default function LoginPage() {
         <Button
           type="button"
           className="w-full"
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          onClick={() =>
+            signIn(
+              "google",
+              { callbackUrl: "/dashboard" },
+              { prompt: "select_account" }
+            )
+          }
         >
           Войти через Google
         </Button>
@@ -50,7 +56,10 @@ export default function LoginPage() {
         </Button>
       </div>
       <p className="text-center text-sm text-muted-foreground">
-        Нет аккаунта? Войдите через Google или Apple — он создастся автоматически.
+        Нет аккаунта?{" "}
+        <Link href="/register" className="text-primary hover:underline">
+          Зарегистрироваться
+        </Link>
       </p>
       <p className="text-center text-sm">
         <Link

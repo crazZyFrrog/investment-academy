@@ -52,7 +52,7 @@ export function MobileNav() {
               className={cn(
                 "flex min-h-[3.25rem] flex-col items-center justify-center gap-1 rounded-[var(--radius-lg)] px-0.5 py-2 text-[10px] font-medium tracking-wide transition-colors",
                 "active:bg-muted/80",
-                active ? "text-primary" : "text-text-tertiary"
+                active ? "bg-primary/10 text-primary" : "text-text-tertiary"
               )}
             >
               <Icon

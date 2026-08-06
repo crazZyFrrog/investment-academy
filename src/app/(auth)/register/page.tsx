@@ -34,7 +34,13 @@ export default function RegisterPage() {
         <Button
           type="button"
           className="w-full"
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          onClick={() =>
+            signIn(
+              "google",
+              { callbackUrl: "/dashboard" },
+              { prompt: "select_account" }
+            )
+          }
         >
           Создать через Google
         </Button>

@@ -7,7 +7,8 @@ import { useUserId } from "@/hooks/use-user-id";
 import { useSyncProgress } from "@/queries/progress";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Badge } from "@/components/ui/badge";
-import { Cloud, CloudOff, RefreshCw } from "lucide-react";
+import { Cloud, CloudOff } from "@/design-system/icons";
+import { cn } from "@/lib/utils";
 
 function subscribeOnline(callback: () => void) {
   window.addEventListener("online", callback);
@@ -26,7 +27,13 @@ function getServerOnlineSnapshot() {
   return true;
 }
 
-function GuestSyncStatusBadge() {
+type SyncStatusBadgeProps = {
+  /** Icon-only for tight layouts (sidebar / mobile header). */
+  compact?: boolean;
+  className?: string;
+};
+
+function GuestSyncStatusBadge({ compact, className }: SyncStatusBadgeProps) {
   const online = useSyncExternalStore(
     subscribeOnline,
     getOnlineSnapshot,
@@ -35,25 +42,36 @@ function GuestSyncStatusBadge() {
 
   if (!online) {
     return (
-      <Badge variant="outline" className="gap-1">
-        <CloudOff className="h-3 w-3" />
-        Офлайн
+      <Badge
+        variant="outline"
+        title="Офлайн"
+        className={cn(compact ? "px-1.5" : "gap-1", className)}
+      >
+        <CloudOff className="size-3" aria-hidden />
+        {compact ? <span className="sr-only">Офлайн</span> : "Офлайн"}
       </Badge>
     );
   }
 
   return (
-    <Badge variant="outline" className="gap-1">
-      Гость
+    <Badge
+      variant="outline"
+      title="Гость"
+      className={cn(compact ? "px-1.5" : "gap-1", className)}
+    >
+      {compact ? <span className="sr-only">Гость</span> : "Гость"}
     </Badge>
   );
 }
 
 /** Full session-aware badge — mounted only when AUTH_ENABLED is true. */
-function AuthenticatedSyncStatusBadge() {
+function AuthenticatedSyncStatusBadge({
+  compact,
+  className,
+}: SyncStatusBadgeProps) {
   const { data: session } = useSession();
   const userId = useUserId();
-  const syncProgress = useSyncProgress(userId);
+  const { mutate } = useSyncProgress(userId);
   const hasSyncedRef = useRef(false);
   const online = useSyncExternalStore(
     subscribeOnline,
@@ -61,53 +79,66 @@ function AuthenticatedSyncStatusBadge() {
     getServerOnlineSnapshot
   );
 
+  // Background sync once per mount — do not drive a spinning icon from this.
   useEffect(() => {
     if (!session?.user?.id || !online || hasSyncedRef.current) {
       return;
     }
 
     hasSyncedRef.current = true;
-    syncProgress.mutate();
-  }, [session?.user?.id, online, syncProgress]);
+    mutate();
+  }, [session?.user?.id, online, mutate]);
 
   if (!online) {
     return (
-      <Badge variant="outline" className="gap-1">
-        <CloudOff className="h-3 w-3" />
-        Офлайн
-      </Badge>
-    );
-  }
-
-  if (syncProgress.isPending) {
-    return (
-      <Badge variant="outline" className="gap-1">
-        <RefreshCw className="h-3 w-3 animate-spin" />
-        Синхронизация
+      <Badge
+        variant="outline"
+        title="Офлайн"
+        className={cn(compact ? "px-1.5" : "gap-1", className)}
+      >
+        <CloudOff className="size-3" aria-hidden />
+        {compact ? <span className="sr-only">Офлайн</span> : "Офлайн"}
       </Badge>
     );
   }
 
   if (session?.user?.id) {
     return (
-      <Badge variant="secondary" className="gap-1">
-        <Cloud className="h-3 w-3" />
-        Синхронизировано
+      <Badge
+        variant="secondary"
+        title="Синхронизировано"
+        className={cn(compact ? "px-1.5" : "gap-1", className)}
+      >
+        <Cloud className="size-3" aria-hidden />
+        {compact ? (
+          <span className="sr-only">Синхронизировано</span>
+        ) : (
+          "Синхронизировано"
+        )}
       </Badge>
     );
   }
 
   return (
-    <Badge variant="outline" className="gap-1">
-      Гость
+    <Badge
+      variant="outline"
+      title="Гость"
+      className={cn(compact ? "px-1.5" : "gap-1", className)}
+    >
+      {compact ? <span className="sr-only">Гость</span> : "Гость"}
     </Badge>
   );
 }
 
-export function SyncStatusBadge() {
+export function SyncStatusBadge({
+  compact = false,
+  className,
+}: SyncStatusBadgeProps) {
   if (!AUTH_ENABLED) {
-    return <GuestSyncStatusBadge />;
+    return <GuestSyncStatusBadge compact={compact} className={className} />;
   }
 
-  return <AuthenticatedSyncStatusBadge />;
+  return (
+    <AuthenticatedSyncStatusBadge compact={compact} className={className} />
+  );
 }

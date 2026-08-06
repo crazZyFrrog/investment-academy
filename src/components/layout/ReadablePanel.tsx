@@ -14,7 +14,7 @@ export function ReadablePanel({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-2xl)] border border-border/80 bg-surface/95 px-5 py-5 shadow-xs backdrop-blur-[2px] sm:px-7 sm:py-6",
+        "rounded-[var(--radius-2xl)] border border-primary/15 bg-surface/90 px-5 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-md sm:px-7 sm:py-6",
         className
       )}
     >

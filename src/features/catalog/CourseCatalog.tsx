@@ -61,7 +61,7 @@ function CourseSection({
         </h2>
         <p className="max-w-xl text-sm text-text-secondary">{description}</p>
       </div>
-      <div className="grid gap-4 sm:gap-5">
+      <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
         {courses.map((course, index) => (
           <SlideUp key={course.id} delay={(startIndex + index) * 0.04}>
             <CourseCard

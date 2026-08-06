@@ -162,16 +162,16 @@ export function getCourseAccent(slug: string): CourseAccent {
 
 /** Local cover images for course cards (optional) */
 export const courseCovers: Record<string, string> = {
-  "investing-fundamentals": "/images/covers/fundamentals-living.jpg",
-  "stocks-and-bonds": "/images/covers/stocks-bonds-living.jpg",
-  "portfolio-basics": "/images/covers/portfolio-living.jpg",
-  "russia-practice": "/images/covers/russia-practice-living.jpg",
-  "advanced-behavior": "/images/covers/advanced-behavior-system.jpg",
-  "advanced-portfolio": "/images/covers/advanced-portfolio-system.jpg",
-  "advanced-products": "/images/covers/advanced-products-system.jpg",
-  "first-100k": "/images/covers/first-100k-cover.jpg",
-  dividends: "/images/covers/dividends-cover.jpg",
-  "crypto-without-illusions": "/images/covers/crypto-without-illusions-cover.jpg",
+  "investing-fundamentals": "/images/covers/generated-trading-foundations.png",
+  "stocks-and-bonds": "/images/covers/generated-stocks-bonds.png",
+  "portfolio-basics": "/images/covers/generated-portfolio.png",
+  "russia-practice": "/images/covers/generated-russia-investing.png",
+  "advanced-behavior": "/images/covers/generated-investor-behavior.png",
+  "advanced-portfolio": "/images/covers/generated-advanced-portfolio.png",
+  "advanced-products": "/images/covers/generated-risk-management.png",
+  "first-100k": "/images/covers/generated-first-100k.png",
+  dividends: "/images/covers/generated-dividends.png",
+  "crypto-without-illusions": "/images/covers/generated-crypto.png",
 };
 
 export function getCourseCover(slug: string): string | undefined {
