@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
 
@@ -9,6 +9,8 @@ const YANDEX_AUTH_ENABLED =
   process.env.NEXT_PUBLIC_YANDEX_AUTH_ENABLED === "true";
 
 export default function LoginPage() {
+  const { status } = useSession();
+
   if (!AUTH_ENABLED) {
     return (
       <div className="space-y-6 text-center">
@@ -22,6 +24,37 @@ export default function LoginPage() {
         </div>
         <Button className="w-full" asChild>
           <Link href="/dashboard">Продолжить как гость</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  if (status === "loading") {
+    return (
+      <p className="text-center text-sm text-muted-foreground">
+        Проверяем текущую сессию…
+      </p>
+    );
+  }
+
+  if (status === "authenticated") {
+    return (
+      <div className="space-y-6 text-center">
+        <div className="space-y-2">
+          <h1 className="font-display text-2xl">Вы уже вошли</h1>
+          <p className="text-sm text-muted-foreground">
+            Чтобы использовать другой аккаунт, сначала завершите текущую сессию.
+          </p>
+        </div>
+        <Button
+          type="button"
+          className="w-full"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+        >
+          Выйти и сменить аккаунт
+        </Button>
+        <Button variant="outline" className="w-full" asChild>
+          <Link href="/dashboard">Вернуться в академию</Link>
         </Button>
       </div>
     );
