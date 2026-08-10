@@ -30,29 +30,19 @@ export default function RegisterPage() {
           Сохраняйте и синхронизируйте прогресс обучения.
         </p>
       </div>
-      <div className="space-y-3">
-        <Button
-          type="button"
-          className="w-full"
-          onClick={() =>
-            signIn(
-              "google",
-              { callbackUrl: "/dashboard" },
-              { prompt: "select_account" }
-            )
-          }
-        >
-          Создать через Google
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={() => signIn("apple", { callbackUrl: "/dashboard" })}
-        >
-          Создать через Apple
-        </Button>
-      </div>
+      <Button
+        type="button"
+        className="w-full"
+        onClick={() =>
+          signIn(
+            "google",
+            { callbackUrl: "/dashboard" },
+            { prompt: "select_account" }
+          )
+        }
+      >
+        Создать через Google
+      </Button>
       <p className="text-center text-sm text-muted-foreground">
         Уже есть аккаунт?{" "}
         <Link href="/login" className="text-primary hover:underline">

@@ -32,29 +32,19 @@ export default function LoginPage() {
           Синхронизируйте прогресс уроков между устройствами через аккаунт.
         </p>
       </div>
-      <div className="space-y-3">
-        <Button
-          type="button"
-          className="w-full"
-          onClick={() =>
-            signIn(
-              "google",
-              { callbackUrl: "/dashboard" },
-              { prompt: "select_account" }
-            )
-          }
-        >
-          Войти через Google
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={() => signIn("apple", { callbackUrl: "/dashboard" })}
-        >
-          Войти через Apple
-        </Button>
-      </div>
+      <Button
+        type="button"
+        className="w-full"
+        onClick={() =>
+          signIn(
+            "google",
+            { callbackUrl: "/dashboard" },
+            { prompt: "select_account" }
+          )
+        }
+      >
+        Войти через Google
+      </Button>
       <p className="text-center text-sm text-muted-foreground">
         Нет аккаунта?{" "}
         <Link href="/register" className="text-primary hover:underline">
