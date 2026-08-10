@@ -5,6 +5,9 @@ import { signIn } from "next-auth/react";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
 
+const YANDEX_AUTH_ENABLED =
+  process.env.NEXT_PUBLIC_YANDEX_AUTH_ENABLED === "true";
+
 export default function RegisterPage() {
   if (!AUTH_ENABLED) {
     return (
@@ -43,6 +46,15 @@ export default function RegisterPage() {
       >
         Создать через Google
       </Button>
+      {YANDEX_AUTH_ENABLED ? (
+        <Button
+          type="button"
+          className="w-full bg-[#ffcc00] text-black hover:bg-[#ffd633]"
+          onClick={() => signIn("yandex", { callbackUrl: "/dashboard" })}
+        >
+          Создать через Яндекс
+        </Button>
+      ) : null}
       <p className="text-center text-sm text-muted-foreground">
         Уже есть аккаунт?{" "}
         <Link href="/login" className="text-primary hover:underline">

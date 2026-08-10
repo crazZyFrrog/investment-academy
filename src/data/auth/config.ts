@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Apple from "next-auth/providers/apple";
 import Google from "next-auth/providers/google";
+import Yandex from "next-auth/providers/yandex";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { getDb } from "@/data/db/client";
 import {
@@ -38,6 +39,15 @@ if (AUTH_ENABLED && env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
   );
 }
 
+if (AUTH_ENABLED && env.YANDEX_CLIENT_ID && env.YANDEX_CLIENT_SECRET) {
+  providers.push(
+    Yandex({
+      clientId: env.YANDEX_CLIENT_ID,
+      clientSecret: env.YANDEX_CLIENT_SECRET,
+    })
+  );
+}
+
 if (AUTH_ENABLED && env.APPLE_CLIENT_ID && env.APPLE_CLIENT_SECRET) {
   providers.push(
     Apple({
@@ -49,7 +59,7 @@ if (AUTH_ENABLED && env.APPLE_CLIENT_ID && env.APPLE_CLIENT_SECRET) {
 
 if (AUTH_ENABLED && providers.length === 0) {
   throw new Error(
-    "Authentication is enabled but no OAuth provider is configured. Set Google or Apple credentials."
+    "Authentication is enabled but no OAuth provider is configured. Set Google, Yandex, or Apple credentials."
   );
 }
 
