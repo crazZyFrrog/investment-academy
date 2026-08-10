@@ -39,7 +39,7 @@ export default function HomePage() {
             </div>
           </FadeIn>
           <SlideUp delay={0.06}>
-            <h1 className="max-w-3xl font-display text-[2.35rem] leading-[1.02] tracking-[-0.045em] text-white sm:text-6xl sm:leading-[0.98] md:text-7xl lg:text-[5.8rem]">
+            <h1 className="max-w-3xl font-display text-[2.35rem] leading-[1.12] tracking-[-0.045em] text-white sm:text-6xl sm:leading-[1.1] md:text-7xl lg:text-[5.8rem]">
               Стройте решения.
               <br />
               <span className="text-[#a8ff16]">Не угадывайте рынок.</span>
@@ -69,9 +69,9 @@ export default function HomePage() {
           </div>
         </div>
 
-        <FadeIn delay={0.2} className="relative hidden lg:block">
+        <FadeIn delay={0.2} className="relative mx-auto w-full max-w-md lg:ml-auto">
           <div className="absolute -inset-12 rounded-full bg-[#a8ff16]/8 blur-3xl" />
-          <div className="relative ml-auto max-w-md rotate-2 rounded-2xl border border-white/15 bg-[#101714]/90 p-5 shadow-2xl backdrop-blur-xl">
+          <div className="relative w-full rounded-2xl border border-white/15 bg-[#101714]/90 p-5 shadow-2xl backdrop-blur-xl lg:ml-auto lg:rotate-2">
             <div className="mb-8 flex items-center justify-between text-xs text-white/50">
               <span>Портфель · обзор</span><span className="text-[#a8ff16]">● рынок открыт</span>
             </div>
