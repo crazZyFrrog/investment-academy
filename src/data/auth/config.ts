@@ -57,7 +57,8 @@ const db = getDb();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: env.AUTH_SECRET,
-  trustHost: process.env.NODE_ENV !== "production",
+  // Production requires AUTH_URL above, so the canonical deployment host is explicit.
+  trustHost: process.env.NODE_ENV !== "production" || Boolean(env.AUTH_URL),
   adapter: db
     ? DrizzleAdapter(db, {
         usersTable: users,

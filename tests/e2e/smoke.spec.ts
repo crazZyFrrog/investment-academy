@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /** Correct option indices for the first fundamentals lesson quiz */
-const FIRST_LESSON_CORRECT = [0, 1, 1, 0, 2];
+const FIRST_LESSON_CORRECT = [0, 0, 1, 0, 2];
 
 async function gotoPath(page: Page, path: string) {
   await page.goto(path, { waitUntil: "domcontentloaded" });
@@ -15,7 +15,6 @@ async function completeFirstLessonQuiz(page: Page) {
   await expect(groups).toHaveCount(FIRST_LESSON_CORRECT.length, {
     timeout: 30_000,
   });
-  await groups.first().scrollIntoViewIfNeeded();
 
   for (let i = 0; i < FIRST_LESSON_CORRECT.length; i += 1) {
     const radios = groups.nth(i).getByRole("radio");
@@ -32,9 +31,9 @@ test.describe("smoke + unlock", () => {
   test("landing opens and leads into the academy", async ({ page }) => {
     await gotoPath(page, "/");
     await expect(
-      page.getByRole("heading", { name: "Investment Academy" })
+      page.getByRole("heading", { name: /Стройте решения/i })
     ).toBeVisible();
-    await page.getByRole("link", { name: /Начать обучение/i }).click();
+    await page.getByRole("link", { name: /Начать путь/i }).click();
     await expect(page).toHaveURL(/\/dashboard/);
     await expect(
       page.getByRole("heading", { name: /Учитесь инвестировать спокойно/i })
