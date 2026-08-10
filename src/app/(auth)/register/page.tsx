@@ -9,8 +9,6 @@ const YANDEX_AUTH_ENABLED =
   process.env.NEXT_PUBLIC_YANDEX_AUTH_ENABLED === "true";
 
 export default function RegisterPage() {
-  const { status } = useSession();
-
   if (!AUTH_ENABLED) {
     return (
       <div className="space-y-6 text-center">
@@ -26,6 +24,12 @@ export default function RegisterPage() {
       </div>
     );
   }
+
+  return <EnabledRegisterPage />;
+}
+
+function EnabledRegisterPage() {
+  const { status } = useSession();
 
   if (status === "loading") {
     return (
