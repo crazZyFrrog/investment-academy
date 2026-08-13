@@ -19,8 +19,8 @@ export function useSimulatorUnlock(courses: UnlockCourse[]) {
   const bySlug = useMemo(() => buildCoursesBySlug(courses), [courses]);
 
   const isUnlocked = useMemo(
-    () => isSimulatorRewardUnlocked(snapshot, bySlug),
-    [snapshot, bySlug]
+    () => isSimulatorRewardUnlocked(snapshot),
+    [snapshot]
   );
 
   const lockReason = useMemo(

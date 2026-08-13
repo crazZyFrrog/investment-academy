@@ -68,8 +68,7 @@ export function getSnapshotXp(snapshot: ProgressSnapshot | undefined): number {
 
 export function isSideCourseRewardUnlocked(
   slug: string,
-  snapshot: ProgressSnapshot | undefined,
-  coursesBySlug: Map<string, Pick<CourseSummary, "id" | "slug" | "lessonCount">>
+  snapshot: ProgressSnapshot | undefined
 ): boolean {
   if (!isSideCourseSlug(slug)) return true;
   const reward = getRewardForCourseSlug(slug);

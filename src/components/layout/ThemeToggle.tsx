@@ -1,10 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "@/design-system/icons";
 import { useTheme } from "@/design-system/theme";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+function subscribeNoop() {
+  return () => {};
+}
+
+function getClientReady() {
+  return true;
+}
+
+function getServerReady() {
+  return false;
+}
 
 export function ThemeToggle({
   className,
@@ -14,11 +26,11 @@ export function ThemeToggle({
   variant?: "default" | "onDark";
 }) {
   const { resolvedTheme, setTheme } = useTheme();
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    setReady(true);
-  }, []);
+  const ready = useSyncExternalStore(
+    subscribeNoop,
+    getClientReady,
+    getServerReady
+  );
 
   const isDark = resolvedTheme === "dark";
   const label = isDark ? "Включить светлую тему" : "Включить тёмную тему";

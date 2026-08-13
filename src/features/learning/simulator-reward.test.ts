@@ -25,7 +25,7 @@ describe("simulator reward", () => {
       gamification: { ...emptyGamificationState(), xp: 1000 },
       redeemedRewardIds: [],
     };
-    expect(isSimulatorRewardUnlocked(snapshot, bySlug)).toBe(false);
+    expect(isSimulatorRewardUnlocked(snapshot)).toBe(false);
     expect(getSimulatorLockReason(snapshot, bySlug)).toContain("Награды");
   });
 
@@ -37,7 +37,7 @@ describe("simulator reward", () => {
       gamification: emptyGamificationState(),
       redeemedRewardIds: ["simulator"],
     };
-    expect(isSimulatorRewardUnlocked(snapshot, bySlug)).toBe(true);
+    expect(isSimulatorRewardUnlocked(snapshot)).toBe(true);
     expect(getSimulatorLockReason(snapshot, bySlug)).toBeNull();
   });
 });

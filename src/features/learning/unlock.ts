@@ -43,7 +43,7 @@ export function isCourseContentUnlocked(
   const index = getLearningPathIndex(slug);
 
   if (index < 0) {
-    return isSideCourseRewardUnlocked(slug, snapshot, coursesBySlug);
+    return isSideCourseRewardUnlocked(slug, snapshot);
   }
 
   if (index === 0) return true;

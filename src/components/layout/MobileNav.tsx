@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -35,11 +35,11 @@ function isActive(pathname: string, href: string) {
 
 export function MobileNav() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  return <MobileNavMenu key={pathname} pathname={pathname} />;
+}
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+function MobileNavMenu({ pathname }: { pathname: string }) {
+  const [open, setOpen] = useState(false);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>

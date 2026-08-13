@@ -16,8 +16,7 @@ export const simulatorReward = {
 const SIMULATOR_REWARD_ID = "simulator";
 
 export function isSimulatorRewardUnlocked(
-  snapshot: ProgressSnapshot | undefined,
-  _coursesBySlug: Map<string, Pick<CourseSummary, "id" | "slug" | "lessonCount">>
+  snapshot: ProgressSnapshot | undefined
 ): boolean {
   return isRewardUnlocked(SIMULATOR_REWARD_ID, snapshot);
 }
