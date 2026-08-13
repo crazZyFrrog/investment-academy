@@ -111,6 +111,7 @@ test.describe("responsive nav", () => {
   test("mobile nav exposes progress", async ({ page, isMobile }) => {
     test.skip(!isMobile, "mobile project only");
     await gotoPath(page, "/dashboard");
+    await page.getByRole("button", { name: "Открыть меню" }).click();
     const nav = page.getByRole("navigation", { name: "Мобильная навигация" });
     await expect(nav.getByRole("link", { name: "Прогресс" })).toBeVisible();
     await nav.getByRole("link", { name: "Прогресс" }).click();
@@ -124,12 +125,10 @@ test.describe("responsive nav", () => {
       page.getByRole("heading", { name: /Учитесь инвестировать спокойно/i })
     ).toBeVisible();
     const sideNav = page.getByRole("navigation", { name: "Основная навигация" });
-    const mobileNav = page.getByRole("navigation", {
-      name: "Мобильная навигация",
-    });
+    const menuButton = page.getByRole("button", { name: "Открыть меню" });
     const hasSide = await sideNav.isVisible().catch(() => false);
-    const hasMobile = await mobileNav.isVisible().catch(() => false);
-    expect(hasSide || hasMobile).toBeTruthy();
+    const hasMenu = await menuButton.isVisible().catch(() => false);
+    expect(hasSide || hasMenu).toBeTruthy();
   });
 });
 

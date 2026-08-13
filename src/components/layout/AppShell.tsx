@@ -3,11 +3,9 @@
 import { usePathname } from "next/navigation";
 import { TopBar } from "./TopBar";
 import { SideNav } from "./SideNav";
-import { MobileNav } from "./MobileNav";
 import { EducationalDisclaimer } from "./EducationalDisclaimer";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { GuestMergePrompt } from "@/features/auth/GuestMergePrompt";
-import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,12 +14,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="academy-shell flex min-h-dvh flex-col bg-background lg:flex-row">
       {!isLesson ? <SideNav /> : null}
-      <div
-        className={cn(
-          "flex min-h-dvh flex-1 flex-col",
-          !isLesson && "pb-[4.5rem] lg:pb-0"
-        )}
-      >
+      <div className="flex min-h-dvh flex-1 flex-col">
         <TopBar />
         <main className="relative flex-1">{children}</main>
         {!isLesson ? (
@@ -30,7 +23,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </footer>
         ) : null}
       </div>
-      <MobileNav />
       {AUTH_ENABLED ? <GuestMergePrompt /> : null}
     </div>
   );
