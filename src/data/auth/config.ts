@@ -45,7 +45,9 @@ if (AUTH_ENABLED && env.YANDEX_CLIENT_ID && env.YANDEX_CLIENT_SECRET) {
       clientId: env.YANDEX_CLIENT_ID,
       clientSecret: env.YANDEX_CLIENT_SECRET,
       authorization: {
+        url: "https://oauth.yandex.ru/authorize",
         params: {
+          scope: "login:info login:email login:avatar",
           // Always allow switching accounts on shared devices.
           force_confirm: "yes",
         },
