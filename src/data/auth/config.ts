@@ -44,6 +44,12 @@ if (AUTH_ENABLED && env.YANDEX_CLIENT_ID && env.YANDEX_CLIENT_SECRET) {
     Yandex({
       clientId: env.YANDEX_CLIENT_ID,
       clientSecret: env.YANDEX_CLIENT_SECRET,
+      authorization: {
+        params: {
+          // Always allow switching accounts on shared devices.
+          force_confirm: "yes",
+        },
+      },
     })
   );
 }
