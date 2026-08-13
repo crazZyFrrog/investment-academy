@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { CelebrateComplete, FadeIn } from "@/components/motion";
 import { LessonMarkdown } from "@/components/lesson/LessonMarkdown";
 import { Progress } from "@/components/ui/progress";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { formatMinutes, learningPathOrder } from "@/features/catalog/labels";
 import { useCourseUnlock } from "@/features/learning/use-course-unlock";
 import { getLearningPathIndex } from "@/features/learning/unlock";
@@ -126,6 +127,7 @@ export function LessonReader({
                 {lesson.title}
               </p>
             </div>
+            <ThemeToggle />
           </div>
         </header>
 
@@ -189,6 +191,7 @@ export function LessonReader({
               Урок {lesson.order} из {lessons.length}
             </p>
           </div>
+          <ThemeToggle />
         </div>
         <div className="mx-auto max-w-2xl px-5 pb-3">
           <Progress

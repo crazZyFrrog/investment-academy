@@ -166,10 +166,18 @@
   --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.42), 0 2px 6px rgba(0, 0, 0, 0.26);
 }
 
-/* Academy screens use a focused dark workspace skin.
-   Marketing keeps its own art direction while authenticated screens share
-   these semantic values through the existing component primitives. */
+/* Academy screens share a grid workspace. Dark mode keeps the neon skin;
+   light mode falls back to the global paper tokens. */
 .academy-shell {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--primary) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--primary) 8%, transparent) 1px, transparent 1px);
+  background-size: 72px 72px;
+  color: var(--text-primary);
+}
+
+.dark .academy-shell {
   --background: #070b0a;
   --surface: #0f1512;
   --surface-secondary: #151e19;
@@ -198,15 +206,9 @@
   --card-foreground: var(--text-primary);
   --destructive: var(--error);
   --destructive-foreground: var(--error-foreground);
-  background-color: var(--background);
-  background-image:
-    linear-gradient(rgba(168, 255, 22, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(168, 255, 22, 0.045) 1px, transparent 1px);
-  background-size: 72px 72px;
-  color: var(--text-primary);
 }
 
-.academy-shell .text-primary {
+.dark .academy-shell .text-primary {
   text-shadow: 0 0 18px color-mix(in srgb, var(--primary) 18%, transparent);
 }
 

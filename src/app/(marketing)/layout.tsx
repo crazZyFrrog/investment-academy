@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, GraduationCap } from "@/design-system/icons";
-import { AUTH_ENABLED } from "@/data/auth/flags";
 import { Button } from "@/components/ui/button";
 import { EducationalDisclaimer } from "@/components/layout/EducationalDisclaimer";
+import { MarketingAccountAction } from "@/components/layout/MarketingAccountAction";
 import { PrefetchRoutes } from "@/components/layout/PrefetchRoutes";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 export default function MarketingLayout({
   children,
@@ -38,16 +39,8 @@ export default function MarketingLayout({
           </Link>
         </nav>
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
-          {AUTH_ENABLED ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden text-white/70 hover:bg-white/8 hover:text-white sm:inline-flex"
-              asChild
-            >
-              <Link href="/login">Войти</Link>
-            </Button>
-          ) : null}
+          <ThemeToggle variant="onDark" />
+          <MarketingAccountAction />
           <Button
             variant="accent"
             size="sm"

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { GraduationCap } from "@/design-system/icons";
 import { AUTH_ENABLED } from "@/data/auth/flags";
 import { MobileNav } from "./MobileNav";
+import { ThemeToggle } from "./ThemeToggle";
 import { UserAccountPanel } from "./UserAccountPanel";
 
 export function TopBar() {
@@ -28,7 +29,10 @@ export function TopBar() {
           </span>
         </Link>
       </div>
-      {AUTH_ENABLED ? <UserAccountPanel dense /> : null}
+      <div className="flex shrink-0 items-center gap-1">
+        <ThemeToggle />
+        {AUTH_ENABLED ? <UserAccountPanel dense /> : null}
+      </div>
     </header>
   );
 }
