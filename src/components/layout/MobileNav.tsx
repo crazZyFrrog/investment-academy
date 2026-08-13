@@ -58,9 +58,9 @@ export function MobileNav() {
         <Dialog.Overlay className="fixed inset-0 z-[var(--z-overlay)] bg-[#070b0a]/55 backdrop-blur-sm data-[state=closed]:animate-none" />
         <Dialog.Content
           className={cn(
-            "fixed inset-y-0 right-0 z-[var(--z-modal)] flex w-[min(20rem,88vw)] flex-col border-l border-primary/15 bg-surface/95 shadow-[-18px_0_48px_rgba(0,0,0,0.28)] backdrop-blur-xl",
+            "fixed inset-y-0 left-0 z-[var(--z-modal)] flex w-[min(20rem,88vw)] flex-col border-r border-primary/15 bg-surface/95 shadow-[18px_0_48px_rgba(0,0,0,0.28)] backdrop-blur-xl",
             "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
-            "data-[state=open]:translate-x-0 data-[state=closed]:translate-x-full",
+            "data-[state=open]:translate-x-0 data-[state=closed]:-translate-x-full",
             "transition-transform duration-[var(--duration-normal)] ease-[var(--ease-standard)] motion-reduce:transition-none"
           )}
         >
